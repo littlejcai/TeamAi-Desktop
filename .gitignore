@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+out/
+build/
+*.tsbuildinfo
+
+# test & coverage
+coverage/
+
+# local scan artifacts
+.mimosa/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# editor & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+logs/
