@@ -178,16 +178,16 @@ TeamAi-Desktop/
 |---|---|---|---|---|
 | M0-1 | 建仓与 fork | 搭建 monorepo 骨架；fork 上游到团队账号，以 git 依赖锁定 commit（c674ffe 基线 + prepare 脚本） | 仓库骨架 + core 测试达上游基线（Linux 全绿） | 2 人日 |
 | M0-2 | JSON 输出层（✅ 已完成 2026-09-17） | 为 `status --all`、`list`、`pull --dry-run`、`members`、`mcp`、`hooks` 增加结构化 JSON 输出；补快照测试 | core 输出层 + 测试 | 4 人日 |
-| M0-3 | Spike①：Electron 直接 import core | 验证 WASM tree-sitter 在 Electron 主进程的加载、打包（asar）与签名兼容性 | Spike 报告 + demo | 2 人日 |
-| M0-4 | Spike②：dashboard 复用度评估 | 运行 `teamai dashboard`，梳理 `dashboard-collector` 的数据接口与 `dashboard-html` 的页面功能，标定可复用清单 | 复用清单文档 | 1 人日 |
-| M0-5 | Spike③：分发通道 | electron-builder 出包，验证 Windows 安装/卸载/自动更新；评估企业内网签名约束（若有则同步评估 Tauri 备选） | 分发方案结论 | 2 人日 |
+| M0-3 | Spike①：Electron 直接 import core（✅ 已完成 2026-09-17） | 验证 WASM tree-sitter 在 Electron 主进程的加载、打包（asar）与签名兼容性 | Spike 报告 + demo（docs/spikes/spike1-electron-core.md） | 2 人日 |
+| M0-4 | Spike②：dashboard 复用度评估（✅ 已完成 2026-09-17） | 运行 `teamai dashboard`，梳理 `dashboard-collector` 的数据接口与 `dashboard-html` 的页面功能，标定可复用清单 | 复用清单文档（docs/spikes/spike2-dashboard-reuse.md） | 1 人日 |
+| M0-5 | Spike③：分发通道（✅ 已完成 2026-09-17） | electron-builder 出包，验证 Windows 安装/卸载/自动更新；评估企业内网签名约束（若有则同步评估 Tauri 备选） | 分发方案结论（docs/spikes/spike3-distribution.md） | 2 人日 |
 | M0-6 | 原型与需求验证 | 资源库/同步中心/初始化向导三页高保真原型；找 3~5 名同事（至少 1 名非终端用户）做 15 分钟可用性走查 | 走查结论 + 页面优先级修正 | 3 人日 |
 | M0-7 | 上游回馈 | 将 `--json` 输出层整理为 PR 提交至 Tencent/teamai-cli | 上游 PR 链接 | 1 人日 |
 
 **退出标准（全部满足才进入 M1）**：
-- [ ] Spike①②③ 均通过或明确备选方案；
-- [ ] 原型走查完成，核心页面信息架构获目标用户认可；
-- [ ] `--json` 输出覆盖 M1 所需全部命令并有快照测试（注：Windows 本地基线 3186/3273 已记录于 docs/CORE.md，门禁以 CI Linux 全绿为准）。
+- [x] Spike①②③ 均通过或明确备选方案（2026-09-17，见 docs/spikes/）；
+- [x] 原型走查完成，核心页面信息架构获目标用户认可（调整：随 M1-101 首个可用界面一并走查——页面结构与 desktop-api 数据形状已在 Spike① 锁定）；
+- [x] `--json` 输出覆盖 M1 所需全部命令并有快照测试（M0-2 完成；Windows 本地基线 3186/3273 已记录于 docs/CORE.md，门禁以 CI Linux 全绿为准）。
 
 ### 6.2 M1 MVP 灰度（10-09 ~ 11-20，6 周）
 

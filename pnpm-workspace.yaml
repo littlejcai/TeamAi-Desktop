@@ -13,8 +13,10 @@ overrides:
   postcss: 8.5.28
   picomatch: 4.0.7
 
-# 允许执行安装脚本的依赖：esbuild/vitest 底层、上游测试依赖、teamai-cli 的 prepare 构建
+# 允许执行安装脚本的依赖：esbuild/vitest 底层、上游测试依赖、teamai-cli 的 prepare 构建、
+# Electron 二进制下载
 onlyBuiltDependencies:
   - esbuild
   - opencode-ai
   - teamai-cli
+  - electron

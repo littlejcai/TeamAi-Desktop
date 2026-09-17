@@ -1,0 +1,53 @@
+{
+  "name": "@teamai-desktop/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "TeamAI Desktop — Electron 应用",
+  "main": "src/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "selftest": "electron . --selftest",
+    "dist:dir": "electron-builder --win --dir",
+    "dist": "electron-builder --win nsis portable"
+  },
+  "dependencies": {
+    "teamai-cli": "github:littlejcai/teamai-cli#a6cfdc67190cdf3f6e7b241d4e927aa8679b2db9"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.teamai.desktop",
+    "productName": "TeamAI Desktop",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "littlejcai",
+      "repo": "TeamAi-Desktop"
+    }
+  }
+}

@@ -64,6 +64,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1' # Spike 阶段 CI 不跑 Electron 自测，跳过二进制下载
       - name: Verify teamai-cli git dependency resolved and built
-        run: test -f node_modules/teamai-cli/dist/index.js
+        run: test -f apps/desktop/node_modules/teamai-cli/dist/desktop-api.js
       - run: pnpm typecheck
