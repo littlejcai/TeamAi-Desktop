@@ -13,7 +13,7 @@
     "typecheck": "pnpm -r --if-present run typecheck"
   },
   "dependencies": {
-    "teamai-cli": "github:littlejcai/teamai-cli#6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b"
+    "teamai-cli": "github:littlejcai/teamai-cli#0ce5af152746ce7183c4645a96b8e8ce18d1f398"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

@@ -177,7 +177,7 @@ TeamAi-Desktop/
 | # | 任务 | 主要工作 | 产出物 | 预估 |
 |---|---|---|---|---|
 | M0-1 | 建仓与 fork | 搭建 monorepo 骨架；fork 上游到团队账号，以 git 依赖锁定 commit（c674ffe 基线 + prepare 脚本） | 仓库骨架 + core 测试达上游基线（Linux 全绿） | 2 人日 |
-| M0-2 | JSON 输出层 | 为 `status --all`、`list`、`pull --dry-run`、`members`、`mcp`、`hooks` 增加结构化 JSON 输出；补快照测试 | core 输出层 + 测试 | 4 人日 |
+| M0-2 | JSON 输出层（✅ 已完成 2026-09-17） | 为 `status --all`、`list`、`pull --dry-run`、`members`、`mcp`、`hooks` 增加结构化 JSON 输出；补快照测试 | core 输出层 + 测试 | 4 人日 |
 | M0-3 | Spike①：Electron 直接 import core | 验证 WASM tree-sitter 在 Electron 主进程的加载、打包（asar）与签名兼容性 | Spike 报告 + demo | 2 人日 |
 | M0-4 | Spike②：dashboard 复用度评估 | 运行 `teamai dashboard`，梳理 `dashboard-collector` 的数据接口与 `dashboard-html` 的页面功能，标定可复用清单 | 复用清单文档 | 1 人日 |
 | M0-5 | Spike③：分发通道 | electron-builder 出包，验证 Windows 安装/卸载/自动更新；评估企业内网签名约束（若有则同步评估 Tauri 备选） | 分发方案结论 | 2 人日 |

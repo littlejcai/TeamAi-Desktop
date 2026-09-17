@@ -7,7 +7,7 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 | fork（开发仓库） | https://github.com/littlejcai/teamai-cli |
 | 上游 | https://github.com/Tencent/teamai-cli |
 | 上游基线版本 | 0.22.0（commit `c674ffe`，2026-09-16） |
-| 当前锁定 commit | `6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b`（fork main，含 prepare 构建脚本） |
+| 当前锁定 commit | `0ce5af152746ce7183c4645a96b8e8ce18d1f398`（fork `desktop-json` 分支，2026-09-17；含 JSON 输出层） |
 | 引入方式 | 根 package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
 | 本地开发克隆（主仓库之外） | `D:\Project\teamai-cli` |
 
@@ -21,8 +21,8 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 
 | 分支 | 用途 | 同步规则 |
 |---|---|---|
-| `main` | 上游 + 少量基础设施提交（目前仅 prepare 构建脚本） | `git pull --rebase upstream main`（基础设施提交冲突面≈0） |
-| `desktop-json`（M0-2 创建） | `--json` 输出层开发分支 | 定期 rebase 到 main；主仓库依赖指纹指向此分支的 commit |
+| `main` | 上游 + 少量基础设施提交（prepare 构建脚本、pnpm-lock 忽略） | `git pull --rebase upstream main`（基础设施提交冲突面≈0） |
+| `desktop-json`（已创建，M0-2 已上线） | `--json` 输出层开发分支 | 定期 rebase 到 main；主仓库依赖指纹指向此分支的 commit |
 
 **JSON 输出层规则**：只新增文件 + 命令注册处最小接线；改动处用 `// [teamai-desktop]` 注释标记；不改内核逻辑；成熟即向上游提 PR，被合并后从分支删除对应补丁。
 

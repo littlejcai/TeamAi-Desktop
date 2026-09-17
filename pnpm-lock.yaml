@@ -18,8 +18,8 @@ importers:
   .:
     dependencies:
       teamai-cli:
-        specifier: github:littlejcai/teamai-cli#6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b
-        version: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b
+        specifier: github:littlejcai/teamai-cli#0ce5af152746ce7183c4645a96b8e8ce18d1f398
+        version: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/0ce5af152746ce7183c4645a96b8e8ce18d1f398
     devDependencies:
       typescript:
         specifier: ^5.7.0
@@ -258,8 +258,8 @@ packages:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
     engines: {node: '>=0.10.0'}
 
-  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b:
-    resolution: {tarball: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b}
+  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/0ce5af152746ce7183c4645a96b8e8ce18d1f398:
+    resolution: {tarball: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/0ce5af152746ce7183c4645a96b8e8ce18d1f398}
     version: 0.22.0
     hasBin: true
 
@@ -522,7 +522,7 @@ snapshots:
 
   strip-bom-string@1.0.0: {}
 
-  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b:
+  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/0ce5af152746ce7183c4645a96b8e8ce18d1f398:
     dependencies:
       chalk: 5.6.2
       commander: 12.1.0
