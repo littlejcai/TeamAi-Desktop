@@ -1,3 +1,20 @@
 packages:
   - apps/*
   - packages/*
+
+# pnpm 配置统一放在本文件（pnpm 10+ 的规范位置；package.json 的 pnpm 字段已废弃）
+# 安全 pin：继承自上游 npm overrides（见 docs/CORE.md）
+overrides:
+  js-yaml: ^3.15.2
+  brace-expansion@1: 1.1.18
+  brace-expansion@2: 2.1.4
+  brace-expansion@5: 5.0.9
+  nanoid: 3.3.19
+  postcss: 8.5.28
+  picomatch: 4.0.7
+
+# 允许执行安装脚本的依赖：esbuild/vitest 底层、上游测试依赖、teamai-cli 的 prepare 构建
+onlyBuiltDependencies:
+  - esbuild
+  - opencode-ai
+  - teamai-cli
