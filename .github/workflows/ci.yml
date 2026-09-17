@@ -1,0 +1,68 @@
+name: CI
+
+env:
+  # 与根 package.json 的 teamai-cli 依赖指纹保持一致（见 docs/CORE.md）
+  CORE_COMMIT: "6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core-test:
+    # 上游/单测门禁：在锁定的 fork commit 上以 ubuntu 全绿为准（上游仅支持 ubuntu/macos）
+    name: Core tests (Node ${{ matrix.node-version }}, ubuntu)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: littlejcai/teamai-cli
+          ref: ${{ env.CORE_COMMIT }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx tsc --noEmit
+      - run: npx vitest run
+
+  core-test-windows:
+    # Windows 基线未达全绿（见 docs/CORE.md「测试基线」），仅跟踪不阻断
+    name: Core tests (Node 20, windows, 基线跟踪)
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: littlejcai/teamai-cli
+          ref: ${{ env.CORE_COMMIT }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx tsc --noEmit
+      - run: npx vitest run
+
+  main-repo:
+    # 主仓库自身：依赖解析 + 自有包构建（应用骨架自 M1 起在此扩展）
+    name: Main repo (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify teamai-cli git dependency resolved and built
+        run: test -f node_modules/teamai-cli/dist/index.js
+      - run: pnpm typecheck

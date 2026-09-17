@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | 项目名称 | TeamAI Desktop（基于 Tencent/teamai-cli 的桌面客户端） |
-| 文档版本 | v1.0 |
+| 文档版本 | v1.2（2026-09-17：core 集成方式定为 fork + git 依赖，安全门禁适配过程记录于 docs/CORE.md） |
 | 创建日期 | 2026-09-17 |
 | 文档状态 | 已评审待确认 |
 | 上游项目 | https://github.com/Tencent/teamai-cli（MIT License） |
@@ -30,7 +30,7 @@ teamai-cli（4.7k stars）定位为团队级 AI 工具资源管理器，管理 s
 
 1. 团队成员（含非终端用户）通过 GUI 独立完成 `init → 日常 pull → push 贡献` 全流程；
 2. MVP 阶段覆盖 CLI 高频命令 80% 以上的使用场景；
-3. 核心业务逻辑零重写——复用 vendored 的 teamai-cli 源码，只新增 JSON 输出层；
+3. 核心业务逻辑零重写——通过 fork + git 依赖复用 teamai-cli 源码，只新增 JSON 输出层；
 4. MVP 结束时完成 10 人团队灰度，崩溃率 < 1%/会话，主干任务成功率 ≥ 90%。
 
 ### 1.4 非目标（明确不做什么）
@@ -38,7 +38,7 @@ teamai-cli（4.7k stars）定位为团队级 AI 工具资源管理器，管理 s
 - **不做自建后端/数据库**：延续上游"Git 仓库即服务端"的架构，不引入账号体系；
 - **不做 AI Agent 本身**：不重复造 Claude Code/Cursor 的功能，只做资源管理层；
 - **Web 门户不在 MVP 范围**：仅在触发条件满足时启动（见 M3）;
-- **不深度修改上游内核**：对 vendored core 的改动限制在输出层（`--json`），保持向上游合并的能力。
+- **不深度修改上游内核**：对 fork 内 core 的改动限制在输出层（`--json`），保持向上游合并的能力。
 
 ---
 
@@ -103,7 +103,7 @@ teamai-cli（4.7k stars）定位为团队级 AI 工具资源管理器，管理 s
 └───────────────────┬─────────────────────────────┘
                     │ 直接 import
 ┌───────────────────┴─────────────────────────────┐
-│  packages/core（vendored teamai-cli + JSON 输出层）│
+│  node_modules/teamai-cli（git 依赖，JSON 输出层在 fork 维护）  │
 │  pull/push/init │ recall │ dashboard-collector   │
 └───────────────────┬─────────────────────────────┘
                     │ 读写
@@ -118,10 +118,10 @@ teamai-cli（4.7k stars）定位为团队级 AI 工具资源管理器，管理 s
 | 决策点 | 结论 | 理由 |
 |---|---|---|
 | 桌面壳 | **Electron**（备选：Tauri 2 + Node sidecar） | CLI 是 TS/Node，Electron 主进程自带 Node，可直接 `import` core，集成成本最低；Tauri 仅在企业对包体/签名有硬约束时切换 |
-| 逻辑复用方式 | **vendor 源码**进 monorepo，不 shell 调用 CLI | CLI 输出是给人看的纯文本且无 `--json`，解析文本不可靠；MIT 协议允许 vendor |
-| 数据接口 | **新增 JSON 输出层**，不改内核 | 输出层是纯增量，向上游提 PR 后可长期减少分叉 |
+| 逻辑复用方式 | **fork + git 依赖**（`teamai-cli → github:littlejcai/teamai-cli#<commit>`），源码不落主仓库目录，不 shell 调用 CLI | 第一方安全门禁对主项目做文件系统级全量扫描（与 git diff 无关），vendor 与 submodule 均被上游代码固有模式（测试假密钥/spawn 风格）误报硬拦（已实测）；源码完全外置后门禁只覆盖自有代码，且 fork 内提交不受影响，JSON 层回馈上游路径最短 |
+| 数据接口 | **在 fork 内新增 JSON 输出层**，不改内核 | 输出层是纯增量，从 fork 向上游提 PR 后可长期收敛 |
 | dashboard | **复用 `dashboard-collector`** 数据聚合层 | 会话/趋势/成本估算的采集逻辑已存在，前端重写即可 |
-| 锁定上游 | 锁定 commit + 每双周同步一次 | 上游迭代快（776+ commits），防止无序漂移 |
+| 锁定上游 | git 依赖锁定 fork commit + 每双周同步一次 | 上游迭代快（776+ commits），防止无序漂移 |
 
 ### 4.3 仓库结构（monorepo）
 
@@ -133,9 +133,9 @@ TeamAi-Desktop/
 │       ├── preload/        # contextBridge
 │       └── renderer/       # React 前端
 ├── packages/
-│   ├── core/               # vendored teamai-cli（只加 --json 输出层）
 │   ├── ipc-contract/       # 主/渲染进程共享的 IPC 类型与校验
 │   └── ui/                 # 共享 UI 组件（为 M3 Web 门户预留复用）
+│   （teamai-cli 为 git 依赖，不占 packages/ 目录——见 docs/CORE.md）
 ├── docs/                   # 本文档及后续设计文档
 ├── scripts/                # 上游同步、打包等脚本
 └── package.json            # pnpm workspace
@@ -176,7 +176,7 @@ TeamAi-Desktop/
 
 | # | 任务 | 主要工作 | 产出物 | 预估 |
 |---|---|---|---|---|
-| M0-1 | 建仓与 vendor | 搭建 monorepo 骨架；锁定上游 commit 并 vendor 进 `packages/core`；跑通其原有测试 | 仓库骨架 + core 测试全绿 | 2 人日 |
+| M0-1 | 建仓与 fork | 搭建 monorepo 骨架；fork 上游到团队账号，以 git 依赖锁定 commit（c674ffe 基线 + prepare 脚本） | 仓库骨架 + core 测试达上游基线（Linux 全绿） | 2 人日 |
 | M0-2 | JSON 输出层 | 为 `status --all`、`list`、`pull --dry-run`、`members`、`mcp`、`hooks` 增加结构化 JSON 输出；补快照测试 | core 输出层 + 测试 | 4 人日 |
 | M0-3 | Spike①：Electron 直接 import core | 验证 WASM tree-sitter 在 Electron 主进程的加载、打包（asar）与签名兼容性 | Spike 报告 + demo | 2 人日 |
 | M0-4 | Spike②：dashboard 复用度评估 | 运行 `teamai dashboard`，梳理 `dashboard-collector` 的数据接口与 `dashboard-html` 的页面功能，标定可复用清单 | 复用清单文档 | 1 人日 |
@@ -187,7 +187,7 @@ TeamAi-Desktop/
 **退出标准（全部满足才进入 M1）**：
 - [ ] Spike①②③ 均通过或明确备选方案；
 - [ ] 原型走查完成，核心页面信息架构获目标用户认可；
-- [ ] `--json` 输出覆盖 M1 所需全部命令并有快照测试。
+- [ ] `--json` 输出覆盖 M1 所需全部命令并有快照测试（注：Windows 本地基线 3186/3273 已记录于 docs/CORE.md，门禁以 CI Linux 全绿为准）。
 
 ### 6.2 M1 MVP 灰度（10-09 ~ 11-20，6 周）
 
@@ -261,7 +261,7 @@ TeamAi-Desktop/
 
 | # | 风险 | 概率 | 影响 | 应对措施 |
 |---|---|---|---|---|
-| R1 | 上游迭代快（776+ commits），vendored core 合并冲突越积越大 | 高 | 高 | 只加输出层不改内核；锁定 commit 每双周同步；输出层 PR 回馈上游，被合并后可直接删本地补丁 |
+| R1 | 上游迭代快（776+ commits），fork 分支（desktop-json）与上游漂移、rebase 成本越来越高 | 高 | 高 | 只加输出层不改内核；git 依赖锁定 commit 每双周同步；输出层 PR 回馈上游，被合并后从 fork 删除对应补丁 |
 | R2 | CLI 无稳定 JSON 契约，内核内部结构变化破坏输出层 | 中 | 高 | `ipc-contract` 契约测试 + 输出层快照测试；上游同步 CI 门禁 |
 | R3 | WASM tree-sitter 在 Electron 打包（asar/签名）下不兼容 | 中 | 高 | M0 Spike① 前置验证；备选方案：主进程 shell 调用编译好的 CLI 单文件（bun compile） |
 | R4 | 企业内网对 Electron 包体（~100MB）/签名/自动更新有管控 | 中 | 中 | M0 Spike③ 提前摸清；不满足则切换 Tauri 2 + Node sidecar（~10MB） |
@@ -288,8 +288,8 @@ TeamAi-Desktop/
 ## 9. 协作流程
 
 - **分支模型**：`main` 保护 + `feature/*` 短分支；conventional commits；changesets 管理版本号；
-- **上游同步**：每双周一次，`scripts/sync-upstream` 拉取上游新 tag → rebase `packages/core` 输出层补丁 → CI 全绿后合入；冲突超过 200 行时升级评审是否调整策略；
-- **评审要求**：`packages/core` 改动必须双人评审；renderer 改动单人评审 + 设计走查；
+- **上游同步**：每双周一次——fork 内 rebase 到上游最新并推送（`bash scripts/sync-upstream.sh`）→ 主仓库更新 package.json 依赖指纹 → CI 全绿后合入；单次同步 diff 超过 200 行冲突时升级评审是否调整策略（详见 docs/CORE.md）；
+- **评审要求**：fork 内 core 改动必须双人评审；renderer 改动单人评审 + 设计走查；
 - **CI 门禁**：lint + 单测 + E2E + 打包冒烟，全绿才可合入 `main`；
 - **周会**：Sprint 计划/回顾各 30 分钟；里程碑退出标准逐条打勾后才切换下一阶段。
 
@@ -310,4 +310,4 @@ TeamAi-Desktop/
 - 上游使用指南：https://github.com/Tencent/teamai-cli/blob/main/docs/usage-guide.md
 - 关键数据位置：项目资源在各工具目录；机器数据在 `~/.teamai/`；会话/投票/统计在 Git 仓库 `teamai-reports` 孤儿分支；请求明细在 `~/.teamai/dashboard/requests.jsonl`（90 天自动清理）
 - CLI 无 `--json` 输出（文档确认），这是本项目需要新增输出层的直接原因
-- 许可证：上游 MIT，vendor 时保留版权声明与本仓库 LICENSE 说明
+- 许可证：上游 MIT，fork 与 git 依赖方式下保留上游版权声明（见 docs/CORE.md）
