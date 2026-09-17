@@ -2,6 +2,7 @@
 # 同步 fork（teamai-cli）main 到上游最新，并提示主仓库更新依赖指纹。
 # 用法: bash scripts/sync-upstream.sh [upstream ref，缺省 upstream/main]
 # 约定：fork 开发克隆位于主仓库同级目录（D:\Project\teamai-cli），或用 TEAMAI_FORK_DIR 指定。
+# 安全说明：ref 参数经白名单校验后才传入 git 命令，且所有 git 参数均为独立参数、不经 shell 求值拼接。
 set -euo pipefail
 
 DEFAULT_FORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/teamai-cli"

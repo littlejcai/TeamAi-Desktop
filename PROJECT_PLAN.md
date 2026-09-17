@@ -289,6 +289,7 @@ TeamAi-Desktop/
 
 - **分支模型**：`main` 保护 + `feature/*` 短分支；conventional commits；changesets 管理版本号；
 - **上游同步**：每双周一次——fork 内 rebase 到上游最新并推送（`bash scripts/sync-upstream.sh`）→ 主仓库更新 package.json 依赖指纹 → CI 全绿后合入；单次同步 diff 超过 200 行冲突时升级评审是否调整策略（详见 docs/CORE.md）；
+- **任务状态约定**（借鉴 ai-project-starter）：编号沿用本文的 `M<里程碑>-<序号>`，计划外工作用 `CHORE-<YYYYMMDD>-<序号>`；状态六值：待开始 / 澄清中 / 开发中 / 验证中 / 阻塞 / 已完成；执行状态以 GitHub Issues 跟踪（标题带任务号），完成后回写本文勾选，交接说明须附实际验证证据（详见 AGENTS.md §4）；
 - **评审要求**：fork 内 core 改动必须双人评审；renderer 改动单人评审 + 设计走查；
 - **CI 门禁**：lint + 单测 + E2E + 打包冒烟，全绿才可合入 `main`；
 - **周会**：Sprint 计划/回顾各 30 分钟；里程碑退出标准逐条打勾后才切换下一阶段。

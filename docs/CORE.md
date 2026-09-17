@@ -11,17 +11,11 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 | 引入方式 | 根 package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
 | 本地开发克隆（主仓库之外） | `D:\Project\teamai-cli` |
 
-## 为什么是 fork + git 依赖（决策记录）
+## 为什么是 fork + git 依赖
 
-第一方安全门禁（Mimosa git gate）对主项目做**文件系统级全量扫描**（与 git diff 无关），上游代码自带的模式——测试 fixture 假密钥、字符串拼接 spawn——会触发 160+ 高危硬拦截。这些 finding 不可"修复"（改上游内核 = 无法维护的分叉）。已实测并排除的路径：
+一句话：第一方安全门禁对主项目做**文件系统级全量扫描**（与 git diff 无关），上游源码只要在盘上就会触发不可修复的高危拦截——vendor、submodule、官方密封扫描报告均已实测无效。
 
-| 方案 | 结果 |
-|---|---|
-| vendor 源码进 packages/core | ❌ L3 扫描拦截 |
-| git submodule（ packages/core → fork） | ❌ 同样拦截（扫描不看 diff，盘上有文件就扫） |
-| 官方 security_scan 密封报告 | ❌ 不解锁门禁 |
-| **git 依赖（源码不落主仓库）** | ✅ 主仓库 diff 与磁盘均无上游源码，门禁只覆盖自有代码 |
-| fork 仓库内提交 | ✅ 实测不受门禁影响（门禁作用域 = 主项目） |
+完整决策过程、备选方案与否决理由见 [ADR-0001](./decisions/0001-core-fork-git-dependency.md)；门禁提交姿势见 [AGENTS.md](../AGENTS.md) §4。
 
 ## fork 分支策略
 
