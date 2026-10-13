@@ -59,4 +59,5 @@ pnpm --filter @teamai-desktop/desktop link D:\Project\teamai-cli
 - CI 从 `apps/desktop/package.json` 解析同一个 commit，再在主仓库之外 checkout core，执行 Ubuntu Node 20/22 的类型检查与全量单测；不再维护独立的 CORE_COMMIT 常量。
 - Windows job 仍为非阻断基线跟踪，其失败必须单独报告；不将 workflow 总体绿灯解释为 Windows 全通过。
 - 原根目录递归 `test/build/typecheck` 没有自有包任务，已移除空跑入口。M1-101 应增加真实任务后才纳入门禁。
+- Windows 当前 CI 观测为 107 失败/3286，详见 [观测清单](./verification/windows-20261013.json)；不覆盖或放宽原有回归标准。因环境/commit 不同，不能与旧 87 失败直接作回归结论。
 - 当前收尾证据与延期项见 [M0 收尾记录](./M0_CLOSEOUT.md)。
