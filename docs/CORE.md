@@ -7,7 +7,7 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 | fork（开发仓库） | https://github.com/littlejcai/teamai-cli |
 | 上游 | https://github.com/Tencent/teamai-cli |
 | 上游基线版本 | 0.22.0（commit `c674ffe`，2026-09-16） |
-| 当前锁定 commit | `a6cfdc67190cdf3f6e7b241d4e927aa8679b2db9`（fork `desktop-json` 分支，2026-09-17；含 JSON 输出层与 desktop-api library entry） |
+| 当前锁定 commit | `7c6357a21e122039cef7dffc928f143dd8e1d7f0`（fork `chore/m0-json-test-closeout` 分支，2026-10-13；基于 desktop-json，仅修正 JSON 测试夹具的 boolean 入参） |
 | 引入方式 | apps/desktop/package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
 | 本地开发克隆（主仓库之外） | `D:\Project\teamai-cli` |
 

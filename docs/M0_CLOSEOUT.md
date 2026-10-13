@@ -1,14 +1,16 @@
 # M0 收尾记录
 
 任务：CHORE-20261013-001。复核日期：2026-10-13。
-范围：整理已有实现和证据、修正依赖验证与文档、交接下一阶段；不新增 M1 功能，不升级 core，不同步上游。
+范围：整理已有实现和证据、修正依赖验证与文档、交接下一阶段；不新增 M1 功能，不升级上游版本，不同步上游；允许修正本次验证暴露的 fork 测试夹具。
 
 ## 当前基线
 
 - 主干原始基线：`7f551df421575b8db19f61c58b9476896ba416fd`，2026-09-17。
-- core 应用实际依赖：`a6cfdc67190cdf3f6e7b241d4e927aa8679b2db9`，应用 manifest 与 pnpm lockfile 一致。
+- 复核前 core 应用实际依赖：`a6cfdc67190cdf3f6e7b241d4e927aa8679b2db9`，应用 manifest 与 pnpm lockfile 一致。
 - 桌面包版本：0.0.0。仅有 `src/main.cjs` 自检应用，显示 JSON 报告；没有 React renderer、preload、IPC 契约或业务页面。
 - 复核时 GitHub 只有 main 分支，未查询到 Issues/PR，没有 Release。不能据此推断本地是否另有未推送开发。
+
+- 收尾后 core pin：`7c6357a21e122039cef7dffc928f143dd8e1d7f0`；仅将 JSON 测试的 user scope 从 undefined 明确为 false，保持生产代码不变。
 
 ## 已有证据与边界
 
@@ -26,7 +28,7 @@
 
 1. CI 的 core-ref 从应用依赖解析 commit，同时校验 lockfile；Ubuntu Node 20/22、Windows 跟踪使用同一 pin。
 2. 新增 `pnpm verify:core`：安装依赖的 library 导出与 TS/Python WASM smoke。主仓库 CI 执行它，替换只检查文件存在和空跑 typecheck；移除根目录无对应任务的 test/build/typecheck 占位入口。
-3. 固定 pnpm 10.12.4；保留已有锁文件与 core pin。
+3. 固定 pnpm 10.12.4；将 core pin/lockfile 更新到同一基线上的测试夹具修正提交。
 4. 修正 README、CORE、协作说明与同步脚本中的旧依赖路径/指纹；修正原型完成状态与日期排期含义。
 5. 建立本记录和 M1 评估入口。历史 Spike 文档不重写为当前验收结果。
 
@@ -35,7 +37,10 @@
 - 本地 Linux / Node 24.19.0 / pnpm 10.12.4：`ELECTRON_SKIP_BINARY_DOWNLOAD=1 pnpm install --frozen-lockfile` 通过；lockfile 无改动。
 - `pnpm verify:core` 通过：实际 a6cfdc6 library 关键导出与 TS/Python WASM 解析。
 - CI YAML 解析、core-ref job 依赖关系、Node/Bash 语法、文档本地链接、`git diff --check` 通过。
-- 实际 pin 的 core 类型检查与全量单测正在复核；收尾 PR 保持 draft，结果补齐后再评估是否可合入。
+- 初次对齐 pin 后，[CI 38408959379](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38408959379) 在 Ubuntu Node 20/22 与 Windows 均复现 `json-output.test.ts:353` 的 TS2345，证明旧门禁遗漏了实际依赖的类型错误。
+- 修正 fork 测试夹具后：Linux Node 24 `npx tsc --noEmit`、`npm run build` 通过；JSON 输出专项 11/11 测试通过。改动仅两处 `undefined → false`，无生产代码变化。
+- 实际 CLI `mcp list --help` 确认支持 `--json`；未初始化目录执行 `mcp list --json` 返回初始化错误、退出 1。这仅验证接线和错误路径，不代表已初始化的完整业务验收。
+- 新 pin 的 CI Ubuntu Node 20/22 全量单测待复核；PR 保持 draft。
 - 未执行：Electron 窗口/asar、Windows 安装卸载、签名与自动更新端到端、用户走查、UI E2E。初次普通安装因 Electron 下载直连 ECONNREFUSED 失败；改用已有 CI 的跳过二进制下载方式完成 Node/core 验证，不视为桌面启动通过。
 
 ## 下一阶段必须显式承接的事项

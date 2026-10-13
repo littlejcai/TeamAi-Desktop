@@ -11,7 +11,7 @@
     "dist": "electron-builder --win nsis portable"
   },
   "dependencies": {
-    "teamai-cli": "github:littlejcai/teamai-cli#a6cfdc67190cdf3f6e7b241d4e927aa8679b2db9"
+    "teamai-cli": "github:littlejcai/teamai-cli#7c6357a21e122039cef7dffc928f143dd8e1d7f0"
   },
   "devDependencies": {
     "electron": "^33.0.0",
