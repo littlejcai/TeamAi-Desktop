@@ -7,8 +7,8 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 | fork（开发仓库） | https://github.com/littlejcai/teamai-cli |
 | 上游 | https://github.com/Tencent/teamai-cli |
 | 上游基线版本 | 0.22.0（commit `c674ffe`，2026-09-16） |
-| 当前锁定 commit | `0ce5af152746ce7183c4645a96b8e8ce18d1f398`（fork `desktop-json` 分支，2026-09-17；含 JSON 输出层） |
-| 引入方式 | 根 package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
+| 当前锁定 commit | `7c6357a21e122039cef7dffc928f143dd8e1d7f0`（fork `chore/m0-json-test-closeout` 分支，2026-10-13；基于 desktop-json，仅修正 JSON 测试夹具的 boolean 入参） |
+| 引入方式 | apps/desktop/package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
 | 本地开发克隆（主仓库之外） | `D:\Project\teamai-cli` |
 
 ## 为什么是 fork + git 依赖
@@ -39,10 +39,10 @@ npx vitest run            # 或 pnpm test
 
 # JSON 层联调（主仓库临时指向本地 fork 克隆）
 cd D:\Project\TeamAi-Desktop
-pnpm link D:\Project\teamai-cli
+pnpm --filter @teamai-desktop/desktop link D:\Project\teamai-cli
 # 恢复 git 依赖：pnpm install --force
 
-# 升级 core：fork 内提交推送 → 主仓库更新 package.json 依赖指纹 → pnpm install
+# 升级 core：fork 内提交推送 → 主仓库更新 apps/desktop/package.json 依赖指纹 → pnpm install
 # 或：bash scripts/sync-upstream.sh（同步上游并提示指纹更新）
 ```
 
@@ -52,3 +52,12 @@ pnpm link D:\Project\teamai-cli
 - **Windows 本地基线**（win32 / Node 24 / 2026-09-17 / commit c674ffe）：3273 测试，3186 通过 / 87 失败（233 文件中 32 个失败）；typecheck、tsup build 通过。
 - 失败归类：① 测试超时为主（Windows 临时目录 git 操作慢）；② `EPERM symlink`（符号链接权限）；③ `EBUSY/ENOTEMPTY` 临时目录清理（文件锁）；④ 连锁 AssertionError。
 - **判定规则**：Windows 本地测试只做回归对比，失败集不得超出上述基线；基线外新失败 = 本地改动引入，必须修复。
+
+## 收尾后的验证入口（2026-10-13）
+
+- `pnpm verify:core`：核对应用 pin 与 lockfile，导入已安装的 desktop-api，验证关键导出与 WASM 的 TS/Python 解析。不是 Electron/安装包验收。
+- CI 从 `apps/desktop/package.json` 解析同一个 commit，再在主仓库之外 checkout core，执行 Ubuntu Node 20/22 的类型检查与全量单测；不再维护独立的 CORE_COMMIT 常量。
+- Windows job 仍为非阻断基线跟踪，其失败必须单独报告；不将 workflow 总体绿灯解释为 Windows 全通过。
+- 原根目录递归 `test/build/typecheck` 没有自有包任务，已移除空跑入口。M1-101 应增加真实任务后才纳入门禁。
+- Windows 当前 CI 观测为 107 失败/3286，详见 [观测清单](./verification/windows-20261013.json)；不覆盖或放宽原有回归标准。因环境/commit 不同，不能与旧 87 失败直接作回归结论。
+- 当前收尾证据与延期项见 [M0 收尾记录](./M0_CLOSEOUT.md)。

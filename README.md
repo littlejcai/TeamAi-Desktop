@@ -2,12 +2,18 @@
 
 [Tencent/teamai-cli](https://github.com/Tencent/teamai-cli) 的桌面客户端：把团队 AI 资源管理（skills / rules / MCP / 知识库）从终端升级为可视化操作。
 
+## 当前状态
+
+M0 技术验证已有历史证据；M1 业务界面尚未实现。当前应用仅展示自检报告。
+现状、验证限制及延期项见 [M0 收尾记录](./docs/M0_CLOSEOUT.md)，
+下一阶段从 [M1 启动评估](./docs/M1_ASSESSMENT.md) 开始；原日期排期不代表实际进度。
+
 ## 仓库结构
 
 ```
 apps/desktop        Electron 应用（主进程 / preload / renderer）
-packages/ipc-contract  主/渲染进程 IPC 类型契约（M1）
-packages/ui         共享 UI 组件（M1）
+packages/ipc-contract  计划新增：主/渲染进程 IPC 类型契约（M1）
+packages/ui         计划新增：共享 UI 组件（M1）
 scripts             上游同步等脚本
 ```
 
@@ -17,7 +23,7 @@ scripts             上游同步等脚本
 
 ```bash
 pnpm install     # 安装依赖（自动构建 teamai-cli 依赖）
-pnpm test        # 运行所有包的测试
+pnpm verify:core # 验证当前依赖 pin、library entry 与 WASM
 ```
 
 core 的开发与单测在 fork 开发克隆中进行（约定 `D:\Project\teamai-cli`，主仓库之外）。
