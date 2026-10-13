@@ -1,17 +1,29 @@
 name: CI
 
-env:
-  # 与根 package.json 的 teamai-cli 依赖指纹保持一致（见 docs/CORE.md）
-  CORE_COMMIT: "6e23f6bc1efd2957bbfdbdc5b31a8c7b5a349c3b"
-
 on:
   push:
     branches: [main]
   pull_request:
 
 jobs:
+  core-ref:
+    name: Resolve application core pin
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.core.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: core
+        run: |
+          core_commit=$(node scripts/verify-core.mjs --commit)
+          echo "commit=$core_commit" >> "$GITHUB_OUTPUT"
+
   core-test:
     # 上游/单测门禁：在锁定的 fork commit 上以 ubuntu 全绿为准（上游仅支持 ubuntu/macos）
+    needs: core-ref
     name: Core tests (Node ${{ matrix.node-version }}, ubuntu)
     runs-on: ubuntu-latest
     strategy:
@@ -22,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: littlejcai/teamai-cli
-          ref: ${{ env.CORE_COMMIT }}
+          ref: ${{ needs.core-ref.outputs.commit }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
@@ -33,6 +45,7 @@ jobs:
 
   core-test-windows:
     # Windows 基线未达全绿（见 docs/CORE.md「测试基线」），仅跟踪不阻断
+    needs: core-ref
     name: Core tests (Node 20, windows, 基线跟踪)
     runs-on: windows-latest
     continue-on-error: true
@@ -40,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: littlejcai/teamai-cli
-          ref: ${{ env.CORE_COMMIT }}
+          ref: ${{ needs.core-ref.outputs.commit }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -66,6 +79,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1' # Spike 阶段 CI 不跑 Electron 自测，跳过二进制下载
-      - name: Verify teamai-cli git dependency resolved and built
-        run: test -f apps/desktop/node_modules/teamai-cli/dist/desktop-api.js
-      - run: pnpm typecheck
+      - name: Verify pinned core library and WASM
+        run: pnpm verify:core
+      # Desktop typecheck / UI tests start at M1-101; no empty recursive checks.

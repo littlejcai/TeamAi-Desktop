@@ -8,11 +8,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm -r --if-present run build",
-    "test": "pnpm -r --if-present run test",
-    "typecheck": "pnpm -r --if-present run typecheck"
+    "verify:core": "node scripts/verify-core.mjs"
   },
   "devDependencies": {
     "typescript": "^5.7.0"
-  }
+  },
+  "packageManager": "pnpm@10.12.4"
 }

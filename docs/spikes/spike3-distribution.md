@@ -26,6 +26,8 @@
 
 ## 自动更新（electron-updater）评估
 
+> 2026-10-13 复核：下文“已就绪”仅指 publish 配置/产物前提；当前 package.json 尚无 electron-updater 依赖，main.cjs 也未接入更新逻辑。端到端自动更新仍未实现。
+
 - 已就绪：`publish: { provider: github, owner: littlejcai, repo: TeamAi-Desktop }` 配置有效；NSIS 产物自带 `.blockmap`（增量更新前提）。
 - 未验证（需首个发布版本）：端到端 `latest.yml` 拉取 + 增量下载 + 换装。计划：M1-102 在主仓库发首个 **draft release**（v0.1.0-alpha），应用内 `electron-updater` 指向该 release 实测升级路径，随后转正式 channel。
 - 未签名安装器的自动更新可用（electron-updater 不强制签名校验），但 SmartScreen 对首次安装会告警。
