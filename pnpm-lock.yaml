@@ -39,8 +39,11 @@ importers:
         specifier: ^9.0.1
         version: 9.1.0(@types/react@18.3.31)(react@18.3.1)
       teamai-cli:
-        specifier: github:littlejcai/teamai-cli#ca44df36ff71e23cc8e6009549a24a5d8f342529
-        version: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/ca44df36ff71e23cc8e6009549a24a5d8f342529
+        specifier: github:littlejcai/teamai-cli#daf2c84baae5313d3c33f43757fad73f90ce5e50
+        version: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/daf2c84baae5313d3c33f43757fad73f90ce5e50
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
     devDependencies:
       '@playwright/test':
         specifier: ^1.51.0
@@ -2215,8 +2218,8 @@ packages:
     engines: {node: '>=10'}
     deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
-  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/ca44df36ff71e23cc8e6009549a24a5d8f342529:
-    resolution: {tarball: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/ca44df36ff71e23cc8e6009549a24a5d8f342529}
+  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/daf2c84baae5313d3c33f43757fad73f90ce5e50:
+    resolution: {tarball: https://codeload.github.com/littlejcai/teamai-cli/tar.gz/daf2c84baae5313d3c33f43757fad73f90ce5e50}
     version: 0.22.0
     hasBin: true
 
@@ -4930,7 +4933,7 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/ca44df36ff71e23cc8e6009549a24a5d8f342529:
+  teamai-cli@https://codeload.github.com/littlejcai/teamai-cli/tar.gz/daf2c84baae5313d3c33f43757fad73f90ce5e50:
     dependencies:
       chalk: 5.6.2
       commander: 12.1.0

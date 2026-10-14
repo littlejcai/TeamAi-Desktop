@@ -77,6 +77,10 @@ const segment = z
 const request = z.discriminatedUnion("action", [
   z.object({ action: z.literal("preferences"), preferences }).strict(),
   z.object({ action: z.literal("snapshot") }).strict(),
+  z.object({ action: z.literal("environment") }).strict(),
+  z
+    .object({ action: z.literal("copyText"), text: z.string().max(4096) })
+    .strict(),
   z.object({ action: z.literal("selectProject") }).strict(),
   z
     .object({
@@ -128,6 +132,12 @@ const resource = z
     name: z.string(),
     type: z.string(),
     source: z.enum(["repo", "local"]),
+    description: z.string().default(""),
+    deployment: z
+      .enum(["current", "pending", "local", "unknown"])
+      .default("unknown"),
+    tools: z.array(z.string()).default([]),
+    readError: z.string().optional(),
   })
   .strict();
 const snapshot = z
@@ -138,6 +148,7 @@ const snapshot = z
     context: z.object({
       scope: z.enum(["user", "project"]),
       projectRoot: z.string(),
+      targetRoot: z.string().optional(),
     }),
     review: id,
   })

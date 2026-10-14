@@ -7,6 +7,7 @@ const {
   Tray,
   Menu,
   nativeImage,
+  clipboard,
 } = require("electron");
 const fs = require("node:fs/promises");
 const path = require("node:path");
@@ -21,6 +22,11 @@ const arg = (name) => {
   return p < 0 ? null : process.argv[p + 1];
 };
 app.setName("TeamAI Desktop");
+const testUserData = arg("--test-user-data");
+if (testUserData) {
+  require("node:fs").mkdirSync(testUserData, { recursive: true });
+  app.setPath("userData", path.resolve(testUserData));
+}
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on("second-instance", () => {
@@ -67,6 +73,7 @@ else {
       },
     });
     const platform = {
+      copyText: (text) => clipboard.writeText(text),
       chooseDirectory: async () => {
         const r = await dialog.showOpenDialog(window, {
           properties: ["openDirectory"],

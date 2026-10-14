@@ -3,12 +3,26 @@ const path = require("node:path");
 const os = require("node:os");
 const crypto = require("node:crypto");
 const { diffLines } = require("diff");
+const { metadata } = require("./resource-metadata.cjs");
 const { fork } = require("node:child_process");
 const {
   request,
   snapshot,
   preferences,
 } = require("@teamai-desktop/ipc-contract");
+async function mapLimited(items, limit, fn) {
+  const results = new Array(items.length);
+  let index = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, async () => {
+      while (index < items.length) {
+        const i = index++;
+        results[i] = await fn(items[i]);
+      }
+    }),
+  );
+  return results;
+}
 const hash = (value) =>
   crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex");
 function redact(text) {
@@ -52,6 +66,7 @@ class DesktopService {
     this.logs.push(line);
     if (this.logs.length > 500) this.logs.shift();
     this.emit(line);
+    this.operationLines?.push(line);
   }
   async run(action, args = {}) {
     const temporary =
@@ -138,7 +153,10 @@ class DesktopService {
           else if (result?.ok && code === 0) resolve(result.data);
           else
             reject(
-              Error(result?.error ?? `Core exited ${code}; inspect logs.`),
+              Object.assign(
+                Error(result?.error ?? `Core exited ${code}; inspect logs.`),
+                { outcome: result?.outcome },
+              ),
             );
         });
         child.send({
@@ -186,12 +204,13 @@ class DesktopService {
           ...[
             ".claude",
             ".codex",
+            ".agents",
             ".cursor",
             ".codebuddy",
             ".opencode",
             ".config/opencode",
             ".teamai/docs",
-          ].map((x) => path.join(os.homedir(), x)),
+          ].map((x) => path.join(this.testHome ?? os.homedir(), x)),
         ];
     const real = await fs.realpath(p);
     let allowed = false;
@@ -260,12 +279,65 @@ class DesktopService {
     };
     const data = {
       ...raw,
-      resources: raw.resources.map(normalize),
-      changes: raw.changes.map(normalize),
-      context: { ...this.context },
+      resources: [],
+      changes: [],
+      context: {
+        ...this.context,
+        targetRoot:
+          this.context.scope === "project"
+            ? this.context.projectRoot
+            : (this.testHome ?? os.homedir()),
+      },
       review: crypto.randomUUID(),
       preferences: { ...this.preferences },
     };
+    data.resources = await mapLimited(raw.resources, 8, async (r) => {
+      const item = normalize(r);
+      item.description = "";
+      item.tools = [];
+      item.deployment = r.source === "local" ? "local" : "unknown";
+      try {
+        const content = await this.readContent(r.path);
+        item.description = metadata(content).description;
+        if (r.type === "skills" && r.source === "repo") {
+          const relevant = (raw.toolTargets ?? []).filter((t) => t.skills);
+          let current = 0,
+            inspected = 0;
+          for (const target of relevant) {
+            // Use the same bounded reader as details; custom paths outside the permitted roots remain unknown.
+            let candidate = path.join(target.skills, r.name, "SKILL.md");
+            if (target.agent === "codex") {
+              const root =
+                this.context.scope === "project"
+                  ? this.context.projectRoot
+                  : (this.testHome ?? os.homedir());
+              const shared = path.join(root, ".agents/skills", r.name);
+              if (await fs.lstat(shared).catch(() => null))
+                candidate = path.join(shared, "SKILL.md");
+            }
+            try {
+              const installed = await this.readContent(candidate);
+              inspected++;
+              if (installed === content) {
+                current++;
+                item.tools.push(target.agent);
+              }
+            } catch (e) {
+              if (e.code === "ENOENT") inspected++;
+            }
+          }
+          if (relevant.length && inspected === relevant.length)
+            item.deployment =
+              current === relevant.length ? "current" : "pending";
+        }
+      } catch (e) {
+        item.readError = redact(e.message);
+      }
+      return item;
+    });
+    data.changes = raw.changes.map(normalize);
+    delete data.pendingPushes;
+    delete data.toolTargets;
     delete data.repoPath;
     this.last = data;
     this.review = { id: data.review, hash: await this.fingerprint() };
@@ -318,9 +390,27 @@ class DesktopService {
           this.preferences = r.preferences;
           this.preview = null;
           await this.persist();
+          // Saving an editor draft does not need to restart core or rescan every resource.
+          // New review identity invalidates the renderer's previous write confirmation;
+          // push still compares this fingerprint with a fresh disk scan before writing.
+          if (this.last) {
+            const review = crypto.randomUUID();
+            this.last = {
+              ...this.last,
+              preferences: { ...this.preferences },
+              review,
+            };
+            this.review = { id: review, hash: await this.fingerprint() };
+            return this.last;
+          }
           return await this.takeSnapshot();
         }
+        if (r.action === "copyText") {
+          await platform.copyText?.(r.text);
+          return {};
+        }
         if (r.action === "snapshot") return await this.takeSnapshot();
+        if (r.action === "environment") return await this.run("environment");
         if (r.action === "detail") {
           const p = this.paths.get(r.id);
           if (!p) throw Error("资源已过期，请刷新列表。");
@@ -352,7 +442,7 @@ class DesktopService {
               diff: before === null ? null : diffLines(before, content),
             };
           }
-          return { content };
+          return { content, ...metadata(content) };
         }
         if (r.action === "inspect") {
           const data = await this.run("inspect", { repo: r.repo });
@@ -433,10 +523,18 @@ class DesktopService {
           )
             throw Error("请选择团队定义的命名空间。");
           this.review = null;
-          await this.run("push", { namespace: r.namespace });
-          return await this.takeSnapshot();
+          const outcome = await this.run("push", { namespace: r.namespace });
+          return { snapshot: await this.takeSnapshot(), outcome };
         }
-        if (r.action === "doctor") return await this.run("doctor");
+        if (r.action === "doctor") {
+          this.operationLines = [];
+          try {
+            const result = await this.run("doctor");
+            return { ...result, report: this.operationLines.join("\n") };
+          } finally {
+            this.operationLines = null;
+          }
+        }
         if (r.action === "exportLogs") {
           return { path: await platform.saveLogs?.(this.logs.join("\n")) };
         }
@@ -457,7 +555,15 @@ class DesktopService {
           : (e.message ?? e),
       );
       this.log(message);
-      return { ok: false, error: { code: "OPERATION_FAILED", message } };
+      return {
+        ok: false,
+        error: {
+          code: "OPERATION_FAILED",
+          message,
+          action: payload?.action,
+          ...(e.outcome ? { outcome: e.outcome } : {}),
+        },
+      };
     }
   }
   async request(payload, platform) {
