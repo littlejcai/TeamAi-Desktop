@@ -4,9 +4,9 @@
 
 ## 下载
 
-0.5.1 产品体验打磨的交付证据见 [落实记录](docs/PRODUCT_REVIEW_FOLLOWUP.md)。下方暂为 0.5.0 已验证包，0.5.1 平台验证完成后更新。
+0.5.1 产品体验打磨的交付证据与截图见 [落实记录](docs/PRODUCT_REVIEW_FOLLOWUP.md)。
 
-[Windows 安装版/便携版](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11871674123) · [Linux 压缩包](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11872277827)。需登录 GitHub，artifact 保留至 2026-10-28；Windows 优先使用 Setup。当前为未配置正式签名的内部试用包。[验证证据](docs/MVP_VALIDATION.md)。
+[Windows 安装版/便携版](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38532390248/artifacts/11878289514) · [Linux 压缩包](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38532390248/artifacts/11877764867)。需登录 GitHub，artifact 保留至 2026-10-28；Windows 优先使用 Setup。当前为未配置正式签名的内部试用包。[当前验证证据](docs/PRODUCT_REVIEW_FOLLOWUP.md)。
 
 ## 能力
 

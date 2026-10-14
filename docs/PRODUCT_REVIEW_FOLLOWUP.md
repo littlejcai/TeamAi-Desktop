@@ -1,6 +1,6 @@
 # 0.5.1 产品审查落实记录
 
-2026-10-14，CHORE-20261014-001。范围：落实本次主干产品审查可在工程内解决的问题。状态：实现与本地最终验证完成，平台 CI 验证中。
+2026-10-14，CHORE-20261014-001。范围：落实本次主干产品审查可在工程内解决的问题。状态：工程交付完成，Linux/Windows 桌面及 Windows 实际安装/卸载验证通过。
 
 | 审查问题 | 实现与验收方式 |
 |---|---|
@@ -20,7 +20,21 @@
 
 本地已执行：fork 类型/构建与 3 个真实读取测试通过；锁定依赖/library/WASM、桌面类型/构建、14 个服务测试通过；2 个真实 UI 主流程通过。最终两条 Electron 流程也已通过，覆盖设置保存/放弃与真实 doctor/日志保存：原生保存窗口在测试中自动选择隔离目标文件，未将此写为人工对话框验收。
 
-验证与截图：完成后补充固定 CI 与本次截图路径。架构依据见 ADR-0003。
+## 最终平台证据与下载
+
+[固定 CI 运行 38532390248](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38532390248)，验证代码 `9f654194753ef64fc101e3c47d96184b3dd9327e`，core `daf2c84baae5313d3c33f43757fad73f90ce5e50`。后续收尾提交仅改文档与补充截图，不修改已验证运行代码。
+
+- Ubuntu Node 20/22 core 全量各 236 文件 / 3289 测试通过。
+- Linux/Windows 桌面类型、14 服务检查、构建通过。
+- 两个平台 dev 与 packaged-layout 各 2 个扩展 Electron 主流程通过。
+- Windows 实际 NSIS 安装后的 2 个扩展流程及卸载通过。
+- Windows 全量 core 历史失败继续独立跟踪，不宣布已修复或无回归。
+
+[Windows 0.5.1 下载](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38532390248/artifacts/11878289514)：`TeamAI-Desktop-0.5.1-Setup-x64.exe` 与 `TeamAI-Desktop-0.5.1-Portable-x64.exe`，建议 Setup。
+
+[Linux 0.5.1 下载](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38532390248/artifacts/11877764867)：`TeamAI-Desktop-0.5.1-linux-x64.tar.gz`。
+
+下载需登录 GitHub，artifact 保留至 2026-10-28。当前为内部无正式签名包，不声明公开发行/自动更新完成。架构依据见 ADR-0003。
 
 
 ## 实际截图
@@ -31,3 +45,11 @@
 - [Generic Git 部分失败与分支回执](verification/product-0.5.1/push-result.png)
 
 普通辅助文字对白底对比约 5.8:1，卡片行动文字约 4.66:1，深色侧栏辅助文字约 8.25:1。此为 CSS 颜色计算与截图检查，不是完整 WCAG 合规声明。
+
+
+## 补充规模与窗口检查
+
+单次 Linux / Node 24 / 当前开发态、真实 core / 隔离本地仓库，501 个合成资源：从启动到完整资源列表载入 7841ms，用途搜索并显示唯一结果 243ms。900×650 窗口中 document scrollWidth 与 viewport width 均 900，无横向滚动；截图已检查。该测量包含系统、进程与文件读取开销，不是正式冷启动/灰度性能验收；较大仓库的完整载入仍需后续优化与重复测量。
+
+- [小窗口与用途搜索](verification/product-0.5.1/small-window.png)
+- [501 资源列表](verification/product-0.5.1/many-resources.png)
