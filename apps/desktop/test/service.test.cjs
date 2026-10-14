@@ -215,3 +215,27 @@ test("JSON and bearer credentials are removed from exported log lines", () => {
     ),
   );
 });
+
+test("init rechecks disk state and refuses a context initialized since inspection", async () => {
+  const f = await fixture();
+  try {
+    const inspection = (
+      await f.service.request({
+        action: "inspect",
+        repo: "https://example.test/team/repo.git",
+      })
+    ).data;
+    const result = await f.service.request({
+      action: "init",
+      inspection: inspection.inspection,
+      role: "",
+      projects: [],
+      agents: ["claude"],
+      confirmed: true,
+    });
+    assert.equal(result.ok, false);
+    assert.ok(!f.calls.includes("init"));
+  } finally {
+    await f.close();
+  }
+});

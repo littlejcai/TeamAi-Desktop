@@ -14,7 +14,14 @@ test(
   async () => {
     const f = await fixture();
     let server;
+    const gitConfigIndex = Number.parseInt(
+      process.env.GIT_CONFIG_COUNT ?? "0",
+      10,
+    );
     const envKeys = [
+      "GIT_CONFIG_COUNT",
+      `GIT_CONFIG_KEY_${gitConfigIndex}`,
+      `GIT_CONFIG_VALUE_${gitConfigIndex}`,
       "GIT_SSL_CAINFO",
       "NODE_EXTRA_CA_CERTS",
       "NO_PROXY",

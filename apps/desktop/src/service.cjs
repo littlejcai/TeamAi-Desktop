@@ -359,6 +359,11 @@ class DesktopService {
             throw Error("项目选择无效。");
           if (this.last?.state === "ready")
             throw Error("当前上下文已初始化；请选择新的目录。");
+          const current = await this.run("snapshot");
+          if (current.state !== "uninitialized")
+            throw Error(
+              "上下文已被其他操作初始化，请刷新；客户端不会覆盖现有配置。",
+            );
           await this.run("init", {
             repo: i.repo,
             role: r.role,

@@ -102,12 +102,21 @@ async function startServer(f) {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const repo = `https://127.0.0.1:${server.address().port}/group/team.git`;
 
+  const gitConfigIndex = Number.parseInt(
+    process.env.GIT_CONFIG_COUNT ?? "0",
+    10,
+  );
+  if (!Number.isInteger(gitConfigIndex) || gitConfigIndex < 0)
+    throw Error("Invalid inherited GIT_CONFIG_COUNT");
   return {
     server,
     repo,
     bare,
     ca,
     env: {
+      GIT_CONFIG_COUNT: String(gitConfigIndex + 1),
+      [`GIT_CONFIG_KEY_${gitConfigIndex}`]: "http.schannelUseSSLCAInfo",
+      [`GIT_CONFIG_VALUE_${gitConfigIndex}`]: "true",
       GIT_SSL_CAINFO: ca,
       NODE_EXTRA_CA_CERTS: ca,
       NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost"]
