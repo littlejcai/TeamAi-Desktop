@@ -114,7 +114,7 @@ class DesktopService {
           clearTimeout(timer);
           reject(e);
         });
-        child.once("exit", (code) => {
+        child.once("close", (code) => {
           clearTimeout(timer);
           if (timedOut)
             reject(Error("操作超时，可能已部分完成；请先运行诊断再重试。"));

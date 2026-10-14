@@ -95,7 +95,7 @@ async function startServer(f) {
         res.statusCode = 500;
         res.end(e.message);
       });
-      child.once("exit", () => res.end());
+      child.once("close", () => res.end());
       req.pipe(child.stdin);
     },
   );

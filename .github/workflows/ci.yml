@@ -100,6 +100,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Ensure Electron binary after pnpm cache restore
+        run: node apps/desktop/node_modules/electron/install.js
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build

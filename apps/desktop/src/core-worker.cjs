@@ -5,6 +5,13 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const os = require("node:os");
 const exec = promisify(execFile);
+function finish(result, code) {
+  process.stdout.write("", () =>
+    process.stderr.write("", () =>
+      process.send(result, () => process.exit(code)),
+    ),
+  );
+}
 process.once("message", async ({ action, context, args }) => {
   try {
     const api = await import("teamai-cli/dist/desktop-api.js");
@@ -55,10 +62,8 @@ process.once("message", async ({ action, context, args }) => {
       throw Error(
         `操作未全部完成（core exit ${process.exitCode}）。可能已经写入配置或推送分支，请先检查日志和仓库状态再重试。`,
       );
-    process.send({ ok: true, data }, () => process.exit(0));
+    finish({ ok: true, data }, 0);
   } catch (e) {
-    process.send({ ok: false, error: String(e.message ?? e) }, () =>
-      process.exit(1),
-    );
+    finish({ ok: false, error: String(e.message ?? e) }, 1);
   }
 });

@@ -97,7 +97,10 @@ test(
         false,
         "Generic Git cannot create a platform PR; partial completion must be reported as failure.",
       );
-      assert.ok(service.logs.join("\n").includes("has been pushed"));
+      assert.ok(
+        service.logs.join("\n").includes("has been pushed"),
+        pushed.error?.message + "\n" + service.logs.join("\n"),
+      );
       assert.ok(service.logs.join("\n").includes("create a PR manually"));
       const branches = execFileSync(
         "git",
