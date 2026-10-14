@@ -1,0 +1,1 @@
+{"name":"@teamai-desktop/ipc-contract","version":"0.1.0","private":true,"main":"index.cjs","types":"index.d.cts","dependencies":{"zod":"^3.24.0"}}

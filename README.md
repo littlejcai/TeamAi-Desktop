@@ -1,38 +1,40 @@
 # TeamAI Desktop
 
-[Tencent/teamai-cli](https://github.com/Tencent/teamai-cli) 的桌面客户端：把团队 AI 资源管理（skills / rules / MCP / 知识库）从终端升级为可视化操作。
+基于 Tencent/teamai-cli 的桌面客户端，MVP 版本 0.5.0。
 
-## 当前状态
+## 能力
 
-M0 技术验证已有历史证据；M1 业务界面尚未实现。当前应用仅展示自检报告。
-现状、验证限制及延期项见 [M0 收尾记录](./docs/M0_CLOSEOUT.md)，
-下一阶段按 [M1 执行计划](./docs/M1_EXECUTION_PLAN.md) 推进；原日期排期不代表实际进度。
+资源搜索/筛选与 Markdown 详情、当前状态、同步预检与确认执行、仓库/角色/工具初始化向导、本地变更对比与贡献确认、诊断、日志导出、范围/目录/代理设置、系统托盘。
 
-## 仓库结构
+core 以锁定 fork commit 的 git 依赖引入，动作在隔离进程中直接 import library；架构与限制见 [ADR-0002](docs/decisions/0002-desktop-core-isolation.md)。
 
-```
-apps/desktop        Electron 应用（主进程 / preload / renderer）
-packages/ipc-contract  计划新增：主/渲染进程 IPC 类型契约（M1）
-packages/ui         计划新增：共享 UI 组件（M1）
-scripts             上游同步等脚本
-```
+## 使用条件
 
-核心逻辑 `teamai-cli` 以 **git 依赖**（锁定 fork commit）引入，源码不落本仓库；JSON 输出层在 fork 内开发。详见 [docs/CORE.md](./docs/CORE.md)。
+Git 需在 PATH 中，仓库认证使用现有 Git/托管平台凭据。GitHub 的 core 集成需要 gh 已登录；自动 IDE hooks 沿用 teamai CLI 环境，需要可用的 teamai CLI 与相应工具运行时。桌面按钮的读取、初始化、同步和贡献使用内置 core，不通过 shell 调用 CLI。
 
-## 开发
+普通 Git 主机没有统一 PR API：分支推送后可能需要在仓库手动创建 PR，客户端会如实显示部分失败。MVP 不在界面展示/提交环境变量变更，不含自动更新、签名证书、知识洞察或 Web 门户。人类用户走查和 10 人灰度指标尚需团队执行，不能以自动测试代替。
+
+## 开发与验证
 
 ```bash
-pnpm install     # 安装依赖（自动构建 teamai-cli 依赖）
-pnpm verify:core # 验证当前依赖 pin、library entry 与 WASM
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm --filter @teamai-desktop/desktop start
+pnpm test:e2e
+pnpm package:win
+pnpm package:linux
 ```
 
-core 的开发与单测在 fork 开发克隆中进行（约定 `D:\Project\teamai-cli`，主仓库之外）。
+开发需要 Node >= 20、pnpm 10.12.4。Linux Electron E2E 需要显示服务（CI 使用 xvfb-run）；Windows 测试使用真实桌面 runner。打包先 deploy 到独立目录，产物位于 apps/desktop/release。
 
 ## 文档
 
-- [项目启动文档](./PROJECT_PLAN.md) — 里程碑、任务分解、风险登记
-- [上游使用指南](https://github.com/Tencent/teamai-cli/blob/main/docs/usage-guide.md)
+- [MVP 验证与交付记录](docs/MVP_VALIDATION.md)
+- [当前执行计划](docs/M1_EXECUTION_PLAN.md)
+- [完整项目范围](PROJECT_PLAN.md)
+- [core 开发策略](docs/CORE.md)
+- [Windows 问题分类](docs/verification/WINDOWS_TRIAGE.md)
 
-## License
-
-本仓库代码 MIT；依赖的 teamai-cli 来自 [Tencent/teamai-cli](https://github.com/Tencent/teamai-cli) 的 fork（MIT），版权声明见 fork 仓库 LICENSE。
+代码遵循 MIT；teamai-cli 的上游版权与许可证保留在依赖中。

@@ -30,3 +30,7 @@ Thumbs.db
 # logs
 *.log
 logs/
+
+# desktop automation artifacts
+playwright-report/
+test-results/
