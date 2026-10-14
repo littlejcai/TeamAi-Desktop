@@ -77,6 +77,14 @@ test(
         confirmed: true,
       });
       assert.equal(pulled.state, "ready");
+      const deployed = pulled.resources.find(
+        (r) => r.name === "example" && r.source === "repo",
+      );
+      assert.equal(deployed.description, "Example resource");
+      assert.equal(deployed.deployment, "current");
+      assert.ok(deployed.tools.includes("claude"));
+      assert.equal(pulled.pendingPushes, undefined);
+      assert.equal(pulled.toolTargets, undefined);
       const skills = path.join(project, ".claude", "skills");
       const installed = await fs.readdir(skills).catch((e) => {
         throw Error(e.message + "\n" + service.logs.join("\n"));
@@ -101,6 +109,11 @@ test(
         false,
         "Generic Git cannot create a platform PR; partial completion must be reported as failure.",
       );
+      assert.equal(pushed.error.outcome.status, "review-required");
+      assert.ok(
+        pushed.error.outcome.records[0].branch.startsWith("teamai/push/"),
+      );
+      assert.equal(pushed.error.outcome.records[0].prUrl, null);
       assert.ok(
         service.logs.join("\n").includes("has been pushed"),
         pushed.error?.message + "\n" + service.logs.join("\n"),

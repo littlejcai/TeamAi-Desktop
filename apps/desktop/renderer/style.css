@@ -555,3 +555,210 @@ dd {
   margin-top: 0;
   padding: 1px 4px;
 }
+/* Product review: readable secondary text, compact hierarchy and stable icons. */
+:root {
+  --muted: #56677b;
+  --accent: #235d72;
+}
+.muted,
+.contextline,
+.stats span,
+.toolbar span,
+.source,
+.card p,
+.planrow span,
+dt,
+.empty p,
+.eyebrow {
+  color: var(--muted);
+}
+.tag {
+  font-size: 12px;
+}
+.source,
+.cardarrow,
+.resource-status,
+.toolbar span {
+  font-size: 13px;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+section {
+  padding: 24px;
+}
+.context {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.workspace-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0 24px;
+  font-size: 13px;
+  color: #465b70;
+}
+.workspace-bar > span {
+  overflow-wrap: anywhere;
+}
+.workspace-bar details {
+  max-width: 600px;
+}
+.workspace-bar summary,
+.advanced summary {
+  cursor: pointer;
+  padding: 8px 0;
+  color: #36556c;
+}
+.workspace-bar p {
+  overflow-wrap: anywhere;
+}
+.workspace-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 28px 0;
+  font-size: 14px;
+}
+.workspace-summary > span {
+  color: var(--muted);
+}
+.workspace-summary .link {
+  margin: 0;
+}
+.cardtop {
+  margin-bottom: 16px;
+}
+.card {
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+}
+.card p {
+  line-height: 1.6;
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+.cardarrow {
+  margin-top: 14px;
+}
+.resource-status {
+  margin-top: auto;
+  color: #3e6170;
+  line-height: 1.6;
+}
+.resource-note {
+  margin-top: 20px;
+  font-size: 13px;
+}
+.sidebarbottom button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  color: #dce6f1;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.sidebarbottom button.active,
+.sidebarbottom button:hover {
+  background: #29475e;
+}
+.sidebarbottom small,
+.navlabel,
+.brand span {
+  color: #b1c1d4;
+}
+.environment,
+.impact {
+  border: 1px solid #d5e2e9;
+  border-radius: 8px;
+  padding: 16px;
+  background: #f3f7f9;
+  margin: 20px 0;
+}
+.environment p,
+.impact p {
+  margin-bottom: 12px;
+}
+.environment .link {
+  margin: 0 0 0 10px;
+}
+.completed {
+  color: #286747;
+  font-weight: 600;
+}
+.result {
+  border-color: #a5cbbd;
+  background: #f8fcfa;
+}
+.receipt {
+  border-bottom: 1px solid #dae6e0;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+.receipt input {
+  font-family: ui-monospace, monospace;
+}
+.buttons {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.advanced {
+  margin: 20px 0;
+}
+.diagnosis {
+  margin-top: 24px;
+  border-top: 1px solid #dce2e9;
+  padding-top: 20px;
+}
+.diagnosis pre {
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+footer {
+  color: #586b80;
+  font-size: 11px;
+}
+.drawer h2 {
+  margin-top: 18px;
+}
+.drawer .sectionheading h2 {
+  margin: 0;
+}
+@media (max-width: 1050px) {
+  .context {
+    justify-content: flex-start;
+  }
+  .workspace-bar {
+    flex-wrap: wrap;
+  }
+  .workspace-summary {
+    gap: 12px;
+  }
+}
+.cardtop {
+  width: 100%;
+  gap: 12px;
+}
+.environment summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.environment[open] summary {
+  margin-bottom: 16px;
+}
+.target-path {
+  overflow-wrap: anywhere;
+}
+.result > button {
+  margin-right: 12px;
+  margin-bottom: 12px;
+}

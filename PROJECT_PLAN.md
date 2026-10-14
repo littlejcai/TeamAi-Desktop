@@ -328,3 +328,8 @@ TeamAi-Desktop/
 - 关键数据位置：项目资源在各工具目录；机器数据在 `~/.teamai/`；会话/投票/统计在 Git 仓库 `teamai-reports` 孤儿分支；请求明细在 `~/.teamai/dashboard/requests.jsonl`（90 天自动清理）
 - CLI 无 `--json` 输出（文档确认），这是本项目需要新增输出层的直接原因
 - 许可证：上游 MIT，fork 与 git 依赖方式下保留上游版权声明（见 docs/CORE.md）
+
+
+## 2026-10-14 产品体验打磨
+
+CHORE-20261014-001：按产品审查修复贡献恢复、草稿、焦点与可读性，并完善资源摘要、环境检查、同步阶段和导航。版本 0.5.1；实现与 Linux/Windows 开发/打包态及 Windows 实际安装/卸载验证完成（CI 38532390248）。验收证据见 [落实记录](docs/PRODUCT_REVIEW_FOLLOWUP.md)，架构见 ADR-0003。人工灰度标准继续保持未完成。

@@ -26,7 +26,7 @@
 ## 3. 常用检查
 
 - 安装：`pnpm install`（git 依赖经 prepare 自动构建 dist）；依赖完整性 = `apps/desktop/node_modules/teamai-cli/dist/desktop-api.js` 存在；执行 `pnpm verify:core`。
-- 当前 M0 验证入口：`pnpm verify:core`。自有包尚无测试/类型检查/构建任务，根目录不保留空跑入口；M1 添加真实任务后再接入 CI。
+- 当前验证入口：`pnpm verify:core`、`pnpm typecheck`、`pnpm test`、`pnpm build`、`pnpm test:e2e`。CI 在 Linux/Windows 验证 dev、安装布局；Windows 另跑实际安装/卸载。
 - core 自身测试：在 fork 克隆内 `npx vitest run`。
 - **Windows 基线判定**：本地跑 core 测试只做回归对比——失败集不得超出 docs/CORE.md 记录的基线（2026-09-17：87 失败/3273，超时、symlink EPERM、文件锁）；基线外新失败 = 改动引入，必须修复。
 - 门禁以 CI 为准：core-test ubuntu（Node 20/22）全绿是合并门槛；windows job 仅基线跟踪。

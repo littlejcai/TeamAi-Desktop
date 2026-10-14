@@ -309,3 +309,65 @@ test("core-generated GUI wrapper runs the real CLI and custom wrappers remain un
     await f.close();
   }
 });
+test("resource metadata supports YAML multiline summaries without rendering frontmatter", async () => {
+  const { metadata } = require("../src/resource-metadata.cjs");
+  const parsed = metadata(
+    "---\nname: sample\ndescription: >\n  Help review\n  team resources\n---\n# Actual body\n",
+  );
+  assert.equal(parsed.description.trim(), "Help review team resources");
+  assert.equal(parsed.body, "# Actual body\n");
+  const broken = "---\nname: [invalid\n---\nBody";
+  assert.equal(metadata(broken).body, broken);
+  assert.ok(metadata(broken).warning);
+});
+test("diagnosis keeps its own report when the session log buffer is already full", async () => {
+  const f = await fixture();
+  try {
+    for (let i = 0; i < 500; i++) f.service.log(`earlier ${i}`);
+    f.service.run = async (action) => {
+      assert.equal(action, "doctor");
+      f.service.log("Current diagnosis: hook requires attention");
+      return { healthy: false };
+    };
+    const result = await f.service.request({ action: "doctor" });
+    assert.equal(result.ok, true);
+    assert.equal(result.data.healthy, false);
+    assert.equal(
+      result.data.report,
+      "Current diagnosis: hook requires attention",
+    );
+    assert.equal(f.service.operationLines, null);
+  } finally {
+    await f.close();
+  }
+});
+test("saving preferences persists the draft without rescanning core and expires old write reviews", async () => {
+  const f = await fixture();
+  try {
+    const before = (await f.service.request({ action: "snapshot" })).data;
+    f.calls.length = 0;
+    const saved = await f.service.request({
+      action: "preferences",
+      preferences: {
+        proxy: "",
+        verbose: false,
+        authorName: "Saved",
+        authorEmail: "saved@example.test",
+      },
+    });
+    assert.equal(saved.ok, true);
+    assert.equal(saved.data.preferences.authorName, "Saved");
+    assert.notEqual(saved.data.review, before.review);
+    assert.deepEqual(f.calls, []);
+    const old = await f.service.request({
+      action: "push",
+      review: before.review,
+      namespace: "team",
+      confirmed: true,
+    });
+    assert.equal(old.ok, false);
+    assert.ok(!f.calls.includes("push"));
+  } finally {
+    await f.close();
+  }
+});

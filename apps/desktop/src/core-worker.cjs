@@ -18,8 +18,88 @@ process.once("message", async ({ action, context, args }) => {
     const api = await import("teamai-cli/dist/desktop-api.js");
     api.setVerbose(Boolean(args.verbose));
     let data;
+    const before =
+      action === "push" ? await api.desktopSnapshot(context) : null;
+    async function contributionOutcome() {
+      const after = await api.desktopSnapshot(context);
+      const prior = new Map(
+        (before?.pendingPushes ?? []).map((p) => [p.branch, JSON.stringify(p)]),
+      );
+      const changed = (after.pendingPushes ?? []).filter(
+        (p) =>
+          prior.get(p.branch) !== JSON.stringify(p) ||
+          (after.lastPush !== before?.lastPush &&
+            p.items?.some((i) =>
+              before?.changes.some(
+                (c) => c.name === i.name && c.type === i.type,
+              ),
+            )),
+      );
+      const records = changed
+        .filter(
+          (p) =>
+            typeof p.branch === "string" &&
+            /^teamai\/[^\s\x00-\x1f]+$/.test(p.branch),
+        )
+        .slice(0, 100)
+        .map((p) => {
+          let prUrl = null;
+          try {
+            const u = new URL(p.prUrl);
+            if (u.protocol === "https:" && !u.username && !u.password)
+              prUrl = u.href;
+          } catch {}
+          return { branch: p.branch, prUrl };
+        });
+      return {
+        status: records.length
+          ? records.some((p) => !p.prUrl)
+            ? "review-required"
+            : "review-open"
+          : "unknown",
+        records,
+      };
+    }
     if (action === "snapshot") data = await api.desktopSnapshot(context);
-    else if (action === "inspect") {
+    else if (action === "environment") {
+      const command = async (bin, argv) => {
+        try {
+          await exec(bin, argv, { timeout: 10000, maxBuffer: 65536 });
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      const toolDirectories = {
+        claude: ".claude",
+        codex: ".codex",
+        cursor: ".cursor",
+        codebuddy: ".codebuddy",
+        opencode: ".config/opencode",
+      };
+      const tools = [];
+      for (const [agent, folder] of Object.entries(toolDirectories)) {
+        const found = await Promise.all(
+          [context.projectRoot, context.home ?? os.homedir()].map((root) =>
+            fs
+              .stat(path.join(root, folder))
+              .then((s) => s.isDirectory())
+              .catch(() => false),
+          ),
+        );
+        if (found.some(Boolean)) tools.push(agent);
+      }
+      const git = await command("git", ["--version"]);
+      const gh = await command("gh", ["--version"]);
+      data = {
+        git,
+        gh,
+        githubAuthenticated:
+          gh &&
+          (await command("gh", ["auth", "status", "--hostname", "github.com"])),
+        tools,
+      };
+    } else if (action === "inspect") {
       const dir = await fs.mkdtemp(path.join(os.tmpdir(), "teamai-inspect-"));
       try {
         await exec("git", ["clone", "--depth", "1", "--", args.repo, dir], {
@@ -73,10 +153,24 @@ process.once("message", async ({ action, context, args }) => {
         verbose: args.verbose,
         role: args.namespace || undefined,
       });
-      data = await api.desktopSnapshot(context);
+      data = await contributionOutcome();
     } else if (action === "doctor") {
       data = { healthy: await api.doctor({ verbose: args.verbose }) };
     } else throw Error("Unsupported core action");
+    if (process.exitCode && action === "push") {
+      const outcome = await contributionOutcome();
+      finish(
+        {
+          ok: false,
+          outcome,
+          error: outcome.records.length
+            ? "分支已推送，评审步骤尚未全部完成。请处理下方评审结果。"
+            : "贡献未全部完成，请核对本次日志和仓库状态。",
+        },
+        1,
+      );
+      return;
+    }
     if (process.exitCode)
       throw Error(
         `操作未全部完成（core exit ${process.exitCode}）。可能已经写入配置或推送分支，请先检查日志和仓库状态再重试。`,
