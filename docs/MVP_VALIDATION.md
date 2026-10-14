@@ -1,6 +1,6 @@
 # MVP 0.5.0 验证与交付记录
 
-日期：2026-10-14。状态：实现与本地验证完成，Windows/CI 安装包验收进行中。不是 10 人灰度已完成的声明。
+日期：2026-10-14。状态：工程 MVP 交付完成，Linux/Windows 桌面与 Windows 实际安装验收通过。不是 10 人灰度已完成的声明。
 
 ## 实现
 
@@ -21,7 +21,7 @@ Linux / Node 24 / Electron 33.4.11：
 - fork 全量 236 个文件、3289 个测试全部通过（日志开关 re-export 后由 CI 重新验证）。
 - 桌面类型检查/构建通过；11 个服务测试通过，包括本地受信 HTTPS Git 的真实 inspect→init→preview→pull→push。
 - 2 个真实 Electron UI 测试通过：读取/详情/坏配置恢复/未初始化与完整向导/确认同步/贡献部分失败。
-- 初次 packaged-layout 读取测试通过；最终包与写流程将在 CI 再验证。
+- 最终 Linux packaged-layout 的两个真实 UI 流程通过；Windows 安装态与写流程由下述 CI 验证。
 
 集成测试使用生成的本地 TLS CA，保持证书校验；没有生产仓库、平台账号写入、HOME 覆盖或假 core。Generic Git 的 PR 创建失败被断言为失败，远端确有推送分支，不能虚报自动创建 PR 通过。
 
@@ -33,4 +33,22 @@ Linux / Node 24 / Electron 33.4.11：
 
 Windows 完整 core 原有失败仍独立跟踪，见 WINDOWS_TRIAGE；桌面 job 为新增硬门槛。Windows NSIS/portable 与 Linux tar.gz 由 CI 构建 artifact，绑定 commit/core pin。
 
-待补齐：最终 CI 链接、Windows desktop 与 packaged-layout 结果、实际产物位置。未执行的人工项：目标用户走查、灰度成功率/崩溃率/性能基线、签名与自动更新端到端。
+## 固定版本 CI 与下载
+
+[验证运行 38516279716](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716)，应用代码 `fd6939842fc14afa6e75fe18a53ca17a19330e27`，core `ca44df36ff71e23cc8e6009549a24a5d8f342529`。后续交付提交仅更新文档，不修改该已验证代码。
+
+| 检查 | 结果 |
+|---|---|
+| 锁定依赖、library/WASM | 通过 |
+| Ubuntu Node 20/22 core | 两个矩阵均通过，236 文件 / 3289 测试 |
+| Linux 与 Windows 桌面 | 类型检查、11 服务测试、构建均通过 |
+| Linux 与 Windows Electron | 每个平台 dev 与 packaged-layout 各 2 个真实 UI 流程通过 |
+| Windows NSIS 实际安装 | 安装后的 2 个 UI 流程通过，实际卸载通过 |
+| Windows 全量 core 历史问题 | 仍失败，独立非阻断跟踪；未宣布已修复或无回归 |
+
+- [Windows 下载 artifact](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11871674123)：内含 `TeamAI-Desktop-0.5.0-Setup-x64.exe`、`TeamAI-Desktop-0.5.0-Portable-x64.exe` 及报告。建议使用 Setup。
+- [Linux 下载 artifact](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11872277827)：内含 `TeamAI-Desktop-0.5.0-linux-x64.tar.gz` 及报告。
+
+下载需登录 GitHub；本次 artifact 到期日 2026-10-28，之后需要从主干重新构建。安装包未配置正式代码签名，此次为内部试用交付，不是公开发行或自动更新验收。
+
+未执行的人工项：目标用户走查、灰度成功率/崩溃率/性能基线、签名与自动更新端到端。

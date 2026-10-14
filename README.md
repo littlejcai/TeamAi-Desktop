@@ -2,6 +2,10 @@
 
 基于 Tencent/teamai-cli 的桌面客户端，MVP 版本 0.5.0。
 
+## 下载
+
+[Windows 安装版/便携版](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11871674123) · [Linux 压缩包](https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38516279716/artifacts/11872277827)。需登录 GitHub，artifact 保留至 2026-10-28；Windows 优先使用 Setup。当前为未配置正式签名的内部试用包。[验证证据](docs/MVP_VALIDATION.md)。
+
 ## 能力
 
 资源搜索/筛选与 Markdown 详情、当前状态、同步预检与确认执行、仓库/角色/工具初始化向导、本地变更对比与贡献确认、诊断、日志导出、范围/目录/Git 身份/代理设置、系统托盘。
