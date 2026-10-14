@@ -22,6 +22,10 @@ test(
       "GIT_CONFIG_COUNT",
       `GIT_CONFIG_KEY_${gitConfigIndex}`,
       `GIT_CONFIG_VALUE_${gitConfigIndex}`,
+      `GIT_CONFIG_KEY_${gitConfigIndex + 1}`,
+      `GIT_CONFIG_VALUE_${gitConfigIndex + 1}`,
+      `GIT_CONFIG_KEY_${gitConfigIndex + 2}`,
+      `GIT_CONFIG_VALUE_${gitConfigIndex + 2}`,
       "GIT_SSL_CAINFO",
       "NODE_EXTRA_CA_CERTS",
       "NO_PROXY",
@@ -65,7 +69,7 @@ test(
       });
       assert.equal(initialized.state, "ready");
       assert.equal(initialized.role, "developer");
-      const preview = await invoke({ action: "preview" });
+      const preview = await invoke({ action: "preview", confirmed: true });
       assert.ok(Array.isArray(preview.plan));
       const pulled = await invoke({
         action: "pull",

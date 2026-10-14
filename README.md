@@ -4,13 +4,15 @@
 
 ## 能力
 
-资源搜索/筛选与 Markdown 详情、当前状态、同步预检与确认执行、仓库/角色/工具初始化向导、本地变更对比与贡献确认、诊断、日志导出、范围/目录/代理设置、系统托盘。
+资源搜索/筛选与 Markdown 详情、当前状态、同步预检与确认执行、仓库/角色/工具初始化向导、本地变更对比与贡献确认、诊断、日志导出、范围/目录/Git 身份/代理设置、系统托盘。
 
 core 以锁定 fork commit 的 git 依赖引入，动作在隔离进程中直接 import library；架构与限制见 [ADR-0002](docs/decisions/0002-desktop-core-isolation.md)。
 
 ## 使用条件
 
-Git 需在 PATH 中，仓库认证使用现有 Git/托管平台凭据。GitHub 的 core 集成需要 gh 已登录；自动 IDE hooks 沿用 teamai CLI 环境，需要可用的 teamai CLI 与相应工具运行时。桌面按钮的读取、初始化、同步和贡献使用内置 core，不通过 shell 调用 CLI。
+Git 需在 PATH 中，仓库认证使用现有 Git/托管平台凭据。提交身份可在设置填写，仅作用于客户端 Git 操作。GitHub 的 core 集成需要 gh 已登录；自动 IDE hooks 沿用 teamai CLI 环境，需要可用的 teamai CLI 与相应工具运行时。桌面按钮的读取、初始化、同步和贡献使用内置 core，不通过 shell 调用 CLI。
+
+便携版暂不支持 CodeBuddy 自动 hooks，优先使用 Windows 安装版。
 
 普通 Git 主机没有统一 PR API：分支推送后可能需要在仓库手动创建 PR，客户端会如实显示部分失败。MVP 不在界面展示/提交环境变量变更，不含自动更新、签名证书、知识洞察或 Web 门户。人类用户走查和 10 人灰度指标尚需团队执行，不能以自动测试代替。
 

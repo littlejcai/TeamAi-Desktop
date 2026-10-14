@@ -34,9 +34,12 @@ class DesktopService {
     this.testHome = testHome;
     this.emit = emit;
     this.settingsFile = settingsFile;
-    this.preferences = preferences.safeParse(settings).success
-      ? settings
-      : { proxy: "", verbose: false };
+    const parsed = preferences.safeParse(
+      settings ?? { proxy: "", verbose: false },
+    );
+    this.preferences = parsed.success
+      ? parsed.data
+      : preferences.parse({ proxy: "", verbose: false });
     this.paths = new Map();
     this.logs = [];
     this.busy = false;
@@ -56,6 +59,19 @@ class DesktopService {
         ? await fs.mkdtemp(path.join(os.tmpdir(), "teamai-context-"))
         : null;
     try {
+      const gitIdentity = {};
+      if (this.preferences.authorName && this.preferences.authorEmail) {
+        const n = Number.parseInt(process.env.GIT_CONFIG_COUNT ?? "0", 10);
+        if (!Number.isInteger(n) || n < 0)
+          throw Error("Invalid inherited GIT_CONFIG_COUNT");
+        Object.assign(gitIdentity, {
+          GIT_CONFIG_COUNT: String(n + 2),
+          [`GIT_CONFIG_KEY_${n}`]: "user.name",
+          [`GIT_CONFIG_VALUE_${n}`]: this.preferences.authorName,
+          [`GIT_CONFIG_KEY_${n + 1}`]: "user.email",
+          [`GIT_CONFIG_VALUE_${n + 1}`]: this.preferences.authorEmail,
+        });
+      }
       return await new Promise((resolve, reject) => {
         const child = fork(path.join(__dirname, "core-worker.cjs"), [], {
           cwd: temporary ?? this.context.projectRoot,
@@ -65,6 +81,7 @@ class DesktopService {
             GIT_TERMINAL_PROMPT: "0",
             GIT_OPTIONAL_LOCKS: "0",
             NO_COLOR: "1",
+            ...gitIdentity,
             ...(this.preferences.proxy
               ? {
                   HTTPS_PROXY: this.preferences.proxy,

@@ -51,6 +51,7 @@ test("actual desktop wizard, confirmed sync and contribution partial-failure rec
       page.getByText("初始化完成。前往同步中心获取团队资源。"),
     ).toBeVisible();
     await page.getByRole("button", { name: /同步中心/ }).click();
+    await page.getByRole("checkbox", { name: /我允许预检/ }).check();
     await page.getByRole("button", { name: "检查同步计划" }).click();
     await expect(
       page.getByRole("heading", { name: "同步预检结果" }),

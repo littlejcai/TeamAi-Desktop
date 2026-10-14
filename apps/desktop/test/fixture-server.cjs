@@ -114,9 +114,13 @@ async function startServer(f) {
     bare,
     ca,
     env: {
-      GIT_CONFIG_COUNT: String(gitConfigIndex + 1),
+      GIT_CONFIG_COUNT: String(gitConfigIndex + 3),
       [`GIT_CONFIG_KEY_${gitConfigIndex}`]: "http.schannelUseSSLCAInfo",
       [`GIT_CONFIG_VALUE_${gitConfigIndex}`]: "true",
+      [`GIT_CONFIG_KEY_${gitConfigIndex + 1}`]: "user.name",
+      [`GIT_CONFIG_VALUE_${gitConfigIndex + 1}`]: "Fixture",
+      [`GIT_CONFIG_KEY_${gitConfigIndex + 2}`]: "user.email",
+      [`GIT_CONFIG_VALUE_${gitConfigIndex + 2}`]: "fixture@example.test",
       GIT_SSL_CAINFO: ca,
       NODE_EXTRA_CA_CERTS: ca,
       NO_PROXY: [process.env.NO_PROXY, "127.0.0.1", "localhost"]

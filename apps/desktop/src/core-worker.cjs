@@ -5,6 +5,7 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const os = require("node:os");
 const exec = promisify(execFile);
+const { repairGeneratedWrapper } = require("./hook-runtime.cjs");
 function finish(result, code) {
   process.stdout.write("", () =>
     process.stderr.write("", () =>
@@ -30,6 +31,11 @@ process.once("message", async ({ action, context, args }) => {
         await fs.rm(dir, { recursive: true, force: true });
       }
     } else if (action === "init") {
+      if (
+        process.env.PORTABLE_EXECUTABLE_FILE &&
+        args.agents.includes("codebuddy")
+      )
+        throw Error("便携版暂不支持 CodeBuddy 自动 hooks，请使用安装版。");
       await api.init({
         verbose: args.verbose,
         repo: args.repo,
@@ -38,12 +44,25 @@ process.once("message", async ({ action, context, args }) => {
         project: args.projects.join(",") || undefined,
         agent: args.agents,
       });
+      await repairGeneratedWrapper();
       data = await api.desktopSnapshot(context);
       if (data.state !== "ready")
         throw Error("初始化未完成，请检查日志和 Git 登录状态。");
     } else if (action === "preview" || action === "pull") {
+      if (process.env.PORTABLE_EXECUTABLE_FILE) {
+        const config = await api.desktopConfig(context);
+        if (
+          config &&
+          (config.config.enabledAgents?.includes("codebuddy") ||
+            (!config.config.enabledAgents &&
+              config.team.toolPaths.codebuddy &&
+              !config.config.disabledAgents?.includes("codebuddy")))
+        )
+          throw Error("便携版暂不支持 CodeBuddy 自动 hooks，请使用安装版。");
+      }
       api.setJsonMode();
       await api.pull({ dryRun: action === "preview", verbose: args.verbose });
+      await repairGeneratedWrapper();
       data = {
         plan: api.takeDryRunPlan(),
         snapshot: await api.desktopSnapshot(context),

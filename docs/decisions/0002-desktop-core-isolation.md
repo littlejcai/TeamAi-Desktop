@@ -23,3 +23,7 @@
 ## 打包
 
 pnpm workspace symlink 不能直接交给 electron-builder。先 pnpm deploy --prod --legacy 到独立临时目录，再打包；显式采用当前已安装 Electron 版本，WASM unpack，安装布局必须重复实际 Electron IPC 测试。
+
+## GUI hook 运行时适配
+
+core 生成的 GUI wrapper 的 argv[0] 在桌面 worker 中是 Electron，且 CLI entry 可能在 asar 内。客户端只修复带 core 生成标记、指向本包 entry 的 wrapper，为它设置 ELECTRON_RUN_AS_NODE，并生成 Windows cmd 桥接；不修改自定义 wrapper 或 core 内核。CLI 版本启动在实际 Electron/安装布局测试中验证。便携版 CodeBuddy 自动 hooks 不在本次支持范围。

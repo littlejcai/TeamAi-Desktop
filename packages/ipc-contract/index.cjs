@@ -49,8 +49,24 @@ const preferences = z
         }
       }, "代理必须为不含凭据的 HTTP/HTTPS 地址"),
     verbose: z.boolean(),
+    authorName: z
+      .string()
+      .max(100)
+      .refine(
+        (v) =>
+          !Array.from(v).some((c) => [0, 10, 13].includes(c.charCodeAt(0))),
+        "提交名不能包含控制字符",
+      )
+      .default(""),
+    authorEmail: z
+      .union([z.literal(""), z.string().email().max(254)])
+      .default(""),
   })
-  .strict();
+  .strict()
+  .refine(
+    (v) => Boolean(v.authorName) === Boolean(v.authorEmail),
+    "提交名和邮箱需要同时填写或同时留空",
+  );
 const segment = z
   .string()
   .max(100)
@@ -82,7 +98,9 @@ const request = z.discriminatedUnion("action", [
       confirmed: z.literal(true),
     })
     .strict(),
-  z.object({ action: z.literal("preview") }).strict(),
+  z
+    .object({ action: z.literal("preview"), confirmed: z.literal(true) })
+    .strict(),
   z
     .object({
       action: z.literal("pull"),

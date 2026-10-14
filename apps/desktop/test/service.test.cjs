@@ -128,7 +128,8 @@ test("pull is bound to current preview and cannot run twice", async () => {
   const f = await fixture();
   try {
     await f.service.request({ action: "snapshot" });
-    const p = (await f.service.request({ action: "preview" })).data;
+    const p = (await f.service.request({ action: "preview", confirmed: true }))
+      .data;
     assert.equal(
       (
         await f.service.request({
@@ -235,6 +236,75 @@ test("init rechecks disk state and refuses a context initialized since inspectio
     });
     assert.equal(result.ok, false);
     assert.ok(!f.calls.includes("init"));
+  } finally {
+    await f.close();
+  }
+});
+
+test("client Git identity is validated and does not silently accept partial or multiline input", async () => {
+  const f = await fixture();
+  try {
+    for (const preferences of [
+      { proxy: "", verbose: false, authorName: "Fixture", authorEmail: "" },
+      {
+        proxy: "",
+        verbose: false,
+        authorName: "bad" + String.fromCharCode(10) + "name",
+        authorEmail: "fixture@example.test",
+      },
+    ])
+      assert.equal(
+        (await f.service.request({ action: "preferences", preferences })).ok,
+        false,
+      );
+    assert.equal(
+      (
+        await f.service.request({
+          action: "preferences",
+          preferences: {
+            proxy: "",
+            verbose: false,
+            authorName: "Fixture",
+            authorEmail: "fixture@example.test",
+          },
+        })
+      ).ok,
+      true,
+    );
+    assert.equal(f.service.preferences.authorName, "Fixture");
+  } finally {
+    await f.close();
+  }
+});
+
+test("core-generated GUI wrapper runs the real CLI and custom wrappers remain untouched", async () => {
+  const f = await fixture();
+  try {
+    const { repairWrapper, marker } = require("../src/hook-runtime.cjs");
+    const { promisify } = require("node:util");
+    const exec = promisify(require("node:child_process").execFile);
+    const wrapper = path.join(f.root, "teamai");
+    const entry = require.resolve("teamai-cli/dist/index.js");
+    await fs.writeFile(wrapper, marker + "\n" + entry);
+    assert.equal(
+      await repairWrapper({ wrapper, entry, executable: process.execPath }),
+      true,
+    );
+    const result =
+      process.platform === "win32"
+        ? await exec(
+            "cmd.exe",
+            ["/d", "/s", "/c", '""' + wrapper + '.cmd" --version"'],
+            { windowsVerbatimArguments: true },
+          )
+        : await exec("/bin/sh", [wrapper, "--version"]);
+    assert.match(result.stdout, /0\.22\.0/);
+    await fs.writeFile(wrapper, "user-owned wrapper");
+    assert.equal(
+      await repairWrapper({ wrapper, entry, executable: process.execPath }),
+      false,
+    );
+    assert.equal(await fs.readFile(wrapper, "utf8"), "user-owned wrapper");
   } finally {
     await f.close();
   }

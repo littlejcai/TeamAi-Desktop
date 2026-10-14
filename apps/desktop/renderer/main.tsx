@@ -46,8 +46,11 @@ function App() {
     [projects, setProjects] = useState<string[]>([]),
     [agents, setAgents] = useState<string[]>(["claude", "codex"]),
     [confirmed, setConfirmed] = useState(false);
+  const [authorName, setAuthorName] = useState(""),
+    [authorEmail, setAuthorEmail] = useState("");
   const [proxy, setProxy] = useState(""),
     [verbose, setVerbose] = useState(false);
+  const [preflightConfirmed, setPreflightConfirmed] = useState(false);
   const [preview, setPreview] = useState<any>(null),
     [namespace, setNamespace] = useState(""),
     [reviewed, setReviewed] = useState(false);
@@ -71,10 +74,13 @@ function App() {
       setData(s);
       setProxy(s.preferences?.proxy ?? "");
       setVerbose(s.preferences?.verbose ?? false);
+      setAuthorName(s.preferences?.authorName ?? "");
+      setAuthorEmail(s.preferences?.authorEmail ?? "");
       setNamespace(s.namespaces?.[0] ?? "");
       setDetail(null);
       setReviewed(false);
       setConfirmed(false);
+      setPreflightConfirmed(false);
     }
   }
   async function refresh() {
@@ -342,12 +348,21 @@ function App() {
                 </div>
               </div>
               {data.git?.error && <p role="alert">{data.git.error}</p>}
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={preflightConfirmed}
+                  onChange={(e) => setPreflightConfirmed(e.target.checked)}
+                />
+                我允许预检更新克隆与缓存、迁移旧配置（可能包括
+                hooks）；预检不正式部署资源。
+              </label>
               <button
                 className="primary"
-                disabled={busy}
+                disabled={busy || !preflightConfirmed}
                 onClick={async () => {
                   setConfirmed(false);
-                  const p = await call({ action: "preview" });
+                  const p = await call({ action: "preview", confirmed: true });
                   if (p) {
                     accept(p.snapshot);
                     setPreview(p);
@@ -683,7 +698,28 @@ function App() {
               </p>
             </section>
             <section>
-              <h2>网络与日志</h2>
+              <h2>提交身份、网络与日志</h2>
+              <label className="field">
+                Git 提交名
+                <input
+                  value={authorName}
+                  placeholder="留空以沿用现有 Git 配置"
+                  onChange={(e) => setAuthorName(e.target.value)}
+                />
+              </label>
+              <label className="field">
+                Git 提交邮箱
+                <input
+                  type="email"
+                  value={authorEmail}
+                  placeholder="name@example.com"
+                  onChange={(e) => setAuthorEmail(e.target.value)}
+                />
+              </label>
+              <p className="muted">
+                提交名和邮箱同时填写，仅用于客户端的 Git 操作，不修改系统全局
+                Git 配置。
+              </p>
               <label className="field">
                 代理地址
                 <input
@@ -708,7 +744,7 @@ function App() {
                 onClick={async () => {
                   const s = await call({
                     action: "preferences",
-                    preferences: { proxy, verbose },
+                    preferences: { proxy, verbose, authorName, authorEmail },
                   });
                   if (s) {
                     accept(s);

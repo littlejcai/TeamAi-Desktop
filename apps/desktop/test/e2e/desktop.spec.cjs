@@ -1,6 +1,9 @@
 const { test, expect, _electron } = require("@playwright/test");
 const path = require("node:path");
 const fs = require("node:fs/promises");
+const { promisify } = require("node:util");
+const exec = promisify(require("node:child_process").execFile);
+const { repairWrapper, marker } = require("../../src/hook-runtime.cjs");
 const { fixture } = require("../fixture.cjs");
 test("real Electron IPC: resources, safe detail, error recovery and uninitialized state", async () => {
   const f = await fixture();
@@ -24,6 +27,23 @@ test("real Electron IPC: resources, safe detail, error recovery and uninitialize
       env: { ...process.env, DISPLAY: process.env.DISPLAY ?? ":99" },
     });
     const page = await app.firstWindow();
+    const runtime = await app.evaluate(({ app }) => ({
+      executable: process.execPath,
+      entry: app.getAppPath() + "/node_modules/teamai-cli/dist/index.js",
+    }));
+    const wrapper = path.join(f.root, "teamai-runtime");
+    await fs.writeFile(wrapper, marker + "\n" + runtime.entry);
+    await repairWrapper({ wrapper, ...runtime });
+    const cli =
+      process.platform === "win32"
+        ? await exec(
+            "cmd.exe",
+            ["/d", "/s", "/c", '""' + wrapper + '.cmd" --version"'],
+            { windowsVerbatimArguments: true },
+          )
+        : await exec("/bin/sh", [wrapper, "--version"]);
+    expect(cli.stdout).toMatch(/0\.22\.0/);
+
     await expect(
       page.getByRole("heading", { name: "资源库", exact: true }),
     ).toBeVisible();

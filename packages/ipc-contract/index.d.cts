@@ -7,7 +7,12 @@ export interface Resource {
 }
 export interface Snapshot {
   state: "ready" | "uninitialized";
-  preferences?: { proxy: string; verbose: boolean };
+  preferences?: {
+    proxy: string;
+    verbose: boolean;
+    authorName?: string;
+    authorEmail?: string;
+  };
   resources: Resource[];
   changes: Resource[];
   review: string;
@@ -29,14 +34,18 @@ export interface Snapshot {
   lastPush?: string | null;
 }
 export type Request =
-  | { action: "preferences"; preferences: { proxy: string; verbose: boolean } }
+  | { action: "preview"; confirmed: true }
   | {
-      action:
-        | "snapshot"
-        | "selectProject"
-        | "preview"
-        | "doctor"
-        | "exportLogs";
+      action: "preferences";
+      preferences: {
+        proxy: string;
+        verbose: boolean;
+        authorName?: string;
+        authorEmail?: string;
+      };
+    }
+  | {
+      action: "snapshot" | "selectProject" | "doctor" | "exportLogs";
     }
   | { action: "setScope"; scope: "user" | "project" }
   | { action: "detail"; id: string }
