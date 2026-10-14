@@ -7,7 +7,7 @@ TeamAI Desktop 的核心逻辑来自 [Tencent/teamai-cli](https://github.com/Ten
 | fork（开发仓库） | https://github.com/littlejcai/teamai-cli |
 | 上游 | https://github.com/Tencent/teamai-cli |
 | 上游基线版本 | 0.22.0（commit `c674ffe`，2026-09-16） |
-| 当前锁定 commit | `7c6357a21e122039cef7dffc928f143dd8e1d7f0`（fork `chore/m0-json-test-closeout` 分支，2026-10-13；基于 desktop-json，仅修正 JSON 测试夹具的 boolean 入参） |
+| 当前锁定 commit | `ca44df36ff71e23cc8e6009549a24a5d8f342529`（fork `feature/desktop-mvp-api` 分支，2026-10-13；基于 desktop-json，含只读 desktop payload、动作 re-export 与请求级日志开关） |
 | 引入方式 | apps/desktop/package.json `dependencies.teamai-cli = github:littlejcai/teamai-cli#<commit>` |
 | 本地开发克隆（主仓库之外） | `D:\Project\teamai-cli` |
 
@@ -61,3 +61,5 @@ pnpm --filter @teamai-desktop/desktop link D:\Project\teamai-cli
 - 原根目录递归 `test/build/typecheck` 没有自有包任务，已移除空跑入口。M1-101 应增加真实任务后才纳入门禁。
 - Windows 当前 CI 观测为 107 失败/3286，详见 [观测清单](./verification/windows-20261013.json)；不覆盖或放宽原有回归标准。因环境/commit 不同，不能与旧 87 失败直接作回归结论。
 - 当前收尾证据与延期项见 [M0 收尾记录](./M0_CLOSEOUT.md)。
+
+桌面隔离/输出契约见 [ADR-0002](./decisions/0002-desktop-core-isolation.md)；MVP 操作与验证见 [MVP 验证记录](./MVP_VALIDATION.md)。

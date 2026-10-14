@@ -2,13 +2,20 @@
   "name": "teamai-desktop",
   "version": "0.0.0",
   "private": true,
-  "description": "TeamAI Desktop — 桌面客户端 for Tencent/teamai-cli",
+  "description": "TeamAI Desktop \u2014 \u684c\u9762\u5ba2\u6237\u7aef for Tencent/teamai-cli",
   "license": "MIT",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "verify:core": "node scripts/verify-core.mjs"
+    "verify:core": "node scripts/verify-core.mjs",
+    "build": "pnpm --filter @teamai-desktop/desktop build",
+    "typecheck": "pnpm --filter @teamai-desktop/desktop typecheck",
+    "test": "pnpm --filter @teamai-desktop/desktop test",
+    "test:e2e": "pnpm --filter @teamai-desktop/desktop test:e2e",
+    "package:linux": "node scripts/package.mjs linux",
+    "package:win": "node scripts/package.mjs win",
+    "test:install": "node scripts/windows-install-smoke.cjs"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

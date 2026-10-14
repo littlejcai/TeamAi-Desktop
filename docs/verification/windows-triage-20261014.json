@@ -1,0 +1,542 @@
+{
+  "input_commit": "7c6357a21e122039cef7dffc928f143dd8e1d7f0",
+  "input_run": "https://github.com/littlejcai/TeamAi-Desktop/actions/runs/38409810254/job/115338930466",
+  "count": 107,
+  "items": [
+    {
+      "test": "src/__tests__/anchors.test.ts > listWorktrees > lists the main checkout and every linked worktree (realpath'd)",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/anchors.test.ts > resolveAnchors > gives a worktree its own workspaceRoot but the shared main-checkout anchor",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/anchors.test.ts > resolveAnchors > handles --separate-git-dir without colliding on a shared gitdir parent",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/anchors.test.ts > resolveAnchors > resolves a subdirectory of a worktree to that worktree, anchored at main",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/anchors.test.ts > resolveAnchors > resolves a subdirectory of the main repo up to the repo root",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/anchors.test.ts > resolveAnchors > returns workspace === anchor === repo root for a plain repository",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/api-key.test.ts > saveApiKey > writes the key with 0600 permissions",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/codebase-reconcile.test.ts > codebase reconciliation > counts distinct mappings whose paths contain delimiters",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > detectProjectConfig — subdirectory / worktree > finds the project config when run from a nested subdirectory",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > detectProjectConfig — subdirectory / worktree > finds the project config when run from the repo root",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > detectProjectConfig — subdirectory / worktree > overrides a STALE projectRoot copied from the main checkout into a worktree",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > detectProjectConfig — subdirectory / worktree > resolves a worktree subdirectory to the worktree, not the main checkout",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > resolveDataHomeForScope — desync guard > adopts a pre-#546 legacy-NAMED partition on detection (renamed to the current slug)",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > resolveDataHomeForScope — desync guard > matches getDataHome(detected) for a PARTITIONED install (config in ~/.teamai/projects/<slug>)",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/detect-subdir.test.ts > resolveDataHomeForScope — desync guard > matches getDataHome(detected) for a legacy project install",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/env-handler.test.ts > EnvHandler > pullItem > should idempotently replace existing block (including old-style with exports)",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/env-handler.test.ts > EnvHandler > pullItem > should inject source line into .zshrc for zsh users",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/env-handler.test.ts > EnvHandler > pullItem > should inject source line into shell profile (bash)",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/env-handler.test.ts > EnvHandler > pullItem > should use custom shellProfilePath when specified",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > git-kind reports: refresh before reading (#557) > does not leave autostash conflict markers when an unpushed commit, a dirty report, and origin all touch the same file",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > git-kind reports: refresh before reading (#557) > drops an unpushed commit that conflicts with newer origin data so the checkout never stays diverged",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > git-kind reports: refresh before reading (#557) > keeps an unpushed report commit that rebases cleanly, so the next push delivers it",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > git-kind reports: refresh before reading (#557) > picks up report data another member pushed",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > self-mode reports: shared stash > does not drop a business-worktree stash created while reports rebase is running",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/git-kind-reports.test.ts > self-mode reports: shared stash > does not drop a pre-existing business-worktree stash whose message contains autostash",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/gitlab-clone-realspawn.test.ts > gitlabRepoClone — real spawn (e2e) > never passes the token in the clone URL/argv and sanitizes the error",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-cmd.test.ts > hooksRemove > removes from HOME and cleans up legacy projectRoot entries (#264)",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-reconcile-scope.test.ts > reconcileTeamHooksForConfig — pull/init core path > keeps project team hooks isolated when projects share HOME",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-wrapper.test.ts > reconcileHooksToAllTools — wrapper creation on main inject path > creates wrapper when codebuddy is in toolPaths",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-wrapper.test.ts > reconcileHooksToAllTools — wrapper creation on main inject path > creates wrapper when codebuddy is in toolPaths",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-wrapper.test.ts > reconcileHooksToAllTools — wrapper creation on main inject path > creates wrapper when workbuddy is in toolPaths",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks-wrapper.test.ts > reconcileHooksToAllTools — wrapper creation on main inject path > creates wrapper when workbuddy is in toolPaths",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks.test.ts > hooks > injectHooksToAllTools > filterAgents allows multiple agents (additive init runs)",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks.test.ts > hooks > injectHooksToAllTools > filterAgents limits injection to specified tools only",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/hooks.test.ts > hooks > injectHooksToAllTools > undefined filterAgents injects into all tools (backward compat)",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init-scope-default.test.ts > resolveInitScope > defaults to project with projectRoot = cwd when scope is omitted",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init-scope-default.test.ts > resolveInitScope > uses project scope when --scope project is explicit",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init.test.ts > init > empty repo fallback > should call initRepo when clone succeeds but directory does not exist",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init.test.ts > init > empty repo fallback > should not call initRepo when clone successfully creates the directory",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init.test.ts > init > stale non-git directory > should remove and re-clone when team-repo exists but is not a git repo",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/init.test.ts > init > stale non-git directory > should reuse the existing clone when team-repo is a valid git repo",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent-model-config.test.ts > local-agent: apply_model_config > persists a direct model payload for CodeBuddy, then acks with the task type",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent-model-config.test.ts > local-agent: apply_model_config > persists a direct model payload for WorkBuddy as a top-level array",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: bindCurrentProject --skip > skips the whole project (main + all worktrees) when run from a worktree",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: bindCurrentProject --skip > writes projectId 0 and __skipped__ marker to config",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > buildSyncPayload filters by tool matching ideType",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > collapses two path aliases of the same physical workspace into one entry",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > filters by tool: workbuddy report only includes workbuddy-owned binding",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > includes unattributed cwd binding as current tool and excludes unattributed non-cwd binding",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > includes unbound current cwd in the report",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > omits skills/rules for empty workspaces but includes them when present",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > prunes workspaces whose directory no longer exists",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > reports all bound workspaces, not just the current cwd",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > reports skipped workspaces with project_id 0",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > stampWorkspaceTool returns false when currentPath is null or undefined",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > stampWorkspaceTool writes ideType to cwd binding and returns true",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: full-snapshot workspace reporting > warns and keeps first binding when aliases have conflicting project ids",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: project MCP report is per-worktree (issue #374 P1-2C) > reports only the current workspace's MCP records from the shared partition manifest",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: security — token file permissions > tightens permissions on an already-existing token file",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: security — token file permissions > writes the credential token with owner-only (0o600) permissions",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/local-agent.test.ts > local-agent: worktree binding inheritance > inherits the main checkout binding without re-prompting in a worktree",
+      "category": "hooks-and-agent",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/maintenance-paths.test.ts > resolveMaintenancePaths > reads git-kind votes from the sibling reports worktree",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/maintenance-paths.test.ts > resolveMaintenancePaths > reads self-mode votes from the reports worktree",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/maintenance-promote.test.ts > executePromotion > dry-run does not create files",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/mcp-reconcile.test.ts > MCP reconcile > rejects a requires entry with shell metacharacters instead of running it",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > planMigration > adopts a pre-#546 legacy-NAMED partition before planning (retire-only, not a re-copy)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > planMigration > plans a migration for a legacy git-mode project install",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > planMigration > plans a retire-only cleanup when a partition exists but legacy lingers",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > leaves a localPath that is not inside the legacy dir untouched",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > migrates an http-mode install (no team-repo clone)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > migrates into the partition, keeps the git clone intact, and retires the source",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > rebases repo.localPath from the legacy dir onto the partition",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > recovers from a leftover staging dir (interrupted prior run)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > runMigration > retire-only mode retires a leftover legacy dir without re-copying (finishes an interrupted run)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > self mode migration (P2) > does NOT rebase self repo.localPath (it is the class-B knowledge anchor)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > self mode migration (P2) > finishes an interrupted relocation where config.yaml already moved but plaintext env.local lingers (C1)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > self mode migration (P2) > merges the workspaces/ tree instead of dropping legacy children when the partition dir already exists",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > self mode migration (P2) > refuses to rename a .teamai holding self knowledge, even via the git-mode path (M2 guard)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/migrate.test.ts > self mode migration (P2) > relocates A1 machine data to the partition and leaves class-B knowledge in the repo",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/p3-functionize.test.ts > P3 saveLocalConfigForScope writes an anchor into a partition > a partitioned project config gets an anchor reverse-lookup file",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pending-learnings.test.ts > flushPendingLearnings > re-pushes a namespaced pending learning into its subdir (PR #426 P1 regression)",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pending-learnings.test.ts > pendingLearningsDir > returns a sibling directory named pending-learnings",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pid-monitor.test.ts > getParentPid > matches process.ppid for current process",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pid-monitor.test.ts > getParentPid > returns a number for current process",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pid-monitor.test.ts > getProcessComm > returns a string for current process",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/pid-monitor.test.ts > isProcessAlive > returns true for PID 1 (init/systemd)",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/plugin-command.test.ts > execPluginCommand > uses bash for login-shell plugin commands",
+      "category": "unix-runtime",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/push-skill-flag.test.ts > push --skill flag > detects modified status for flat layout skill in team repo",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/push-skill-flag.test.ts > push --skill flag > expands ~ in skill path",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/push-skill-flag.test.ts > push --skill flag > force-constructs ResourceItem when skill path exists but not in scan results",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/push-skill-flag.test.ts > push --skill flag > force-constructs new skill when not in team repo",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/roles-cmd.test.ts > init.ts — missing manifest graceful skip > error message includes path for debugging",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getConfigPath > should return correct path for project scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getConfigPath > should return correct path for user scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getStatePath > should return correct path for project scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getStatePath > should return correct path for user scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getTeamaiHome > should return <projectRoot>/.teamai for project scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/scope.test.ts > getTeamaiHome > should return ~/.teamai for user scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/search-index-multi.test.ts > buildIndex — Phase 1 multi-category > indexes learnings + docs + rules + skills together with correct types",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/self-worktree-rebind.test.ts > P2 self cross-worktree rebind > does NOT rebind localPath for a non-self (git-mode) config",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/self-worktree-rebind.test.ts > P2 self cross-worktree rebind > rebinds self repo.localPath/businessRepoRoot to a feature worktree",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/self-worktree-rebind.test.ts > P2 self cross-worktree rebind > still resolves correctly from the main checkout",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/source.test.ts > source > pullSources > removes a source skill from its recorded path when a shared Codex skill appears later",
+      "category": "git-and-resource-writes",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/transcript-parser.test.ts > parseTranscriptForVotes > handles quoted doc IDs in referenced markers",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/transcript-parser.test.ts > parseTranscriptForVotes > mixed real + placeholder recalled-doc-ids keeps only real",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/types.test.ts > resolveLegacyProjectHookScope > returns the <projectRoot> pair for a non-self project scope",
+      "category": "context-and-path",
+      "status": "static classification; not individually remediated"
+    },
+    {
+      "test": "src/__tests__/usage-tracking.test.ts > trackSlashCommand > tracks slash command with colon-namespaced skill",
+      "category": "cleanup-index-maintenance",
+      "status": "static classification; not individually remediated"
+    }
+  ]
+}

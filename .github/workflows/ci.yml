@@ -82,3 +82,61 @@ jobs:
       - name: Verify pinned core library and WASM
         run: pnpm verify:core
       # Desktop typecheck / UI tests start at M1-101; no empty recursive checks.
+
+  desktop:
+    name: Desktop (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Ensure Electron binary after pnpm cache restore
+        run: node apps/desktop/node_modules/electron/install.js
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Electron UI and IPC (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pnpm test:e2e
+      - name: Electron UI and IPC (Windows)
+        if: runner.os == 'Windows'
+        run: pnpm test:e2e
+      - name: Package Windows MVP
+        if: runner.os == 'Windows'
+        run: pnpm package:win
+      - name: Package Linux MVP
+        if: runner.os == 'Linux'
+        run: pnpm package:linux
+      - name: Installed-layout smoke (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pnpm test:e2e
+        env:
+          TEAMAI_PACKAGED_EXECUTABLE: ${{ github.workspace }}/apps/desktop/release/linux-unpacked/teamai-desktop
+      - name: Installed-layout smoke (Windows)
+        if: runner.os == 'Windows'
+        run: pnpm test:e2e
+        env:
+          TEAMAI_PACKAGED_EXECUTABLE: ${{ github.workspace }}\apps\desktop\release\win-unpacked\TeamAI Desktop.exe
+      - name: NSIS installation and uninstall (Windows)
+        if: runner.os == 'Windows'
+        run: pnpm test:install
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-${{ matrix.os }}-${{ github.sha }}
+          path: |
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.tar.gz
+            apps/desktop/playwright-report
+            apps/desktop/test-results
+          retention-days: 14
