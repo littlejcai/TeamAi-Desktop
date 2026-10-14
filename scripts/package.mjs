@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { spawn } from "node:child_process";
@@ -11,7 +10,9 @@ if (!["linux", "win"].includes(platform))
   throw Error("Use package.mjs linux|win");
 const pnpm = process.env.npm_execpath;
 if (!pnpm) throw Error("Run through pnpm package:linux or pnpm package:win");
-const stage = await fs.mkdtemp(path.join(os.tmpdir(), "teamai-package-"));
+const stage = await fs.mkdtemp(
+  path.join(path.dirname(root), ".teamai-package-"),
+);
 const run = (args) =>
   new Promise((resolve, reject) => {
     const child = spawn(process.execPath, args, {
